@@ -1,6 +1,10 @@
 local Gamepad = require('lib.joystick')
 local Keyboard = require('lib.keyboard')
 
+local BulletView = require('view.bullet')
+local PlayerView = require('view.player')
+local OSDView = require('view.osd')
+
 local Vector = require('vendor.h.vector')
 
 local player = nil
@@ -30,19 +34,9 @@ function love.joystickadded(new_joystick)
 end
 
 function love.draw()
-  love.graphics.setColor(0, 255, 255)
-  love.graphics.rectangle("fill", player.position.x, player.position.y, player.width, player.height)
-  
-  love.graphics.setColor(255, 0, 255)
-  love.graphics.circle("fill", player.gunPosition.x, player.gunPosition.y, 4, 8)
-  
-  love.graphics.setColor(255, 0, 0)
-  for i,v in ipairs(bullets) do
-    love.graphics.circle("fill", v.position.x, v.position.y, 5)
-  end
-      
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print("Current fps: "..tostring(love.timer.getFPS( )), 6, 6)
+  PlayerView.render(player)
+  BulletView.render(bullets)
+  OSDView.render()
 end
 
 
