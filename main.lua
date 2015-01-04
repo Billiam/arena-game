@@ -10,12 +10,11 @@ local Vector = require('vendor.h.vector')
 local player = nil
 local joystick = nil
 local bullets = {}
-local bulletSpeed = 500
+local bulletSpeed = 1200
 local bulletTimer = 0
 local gunDistance = 10
-local jitter = 5
 
-function love.load(arg)
+function love.load()
   player = {
     position = Vector(256, 256),
     gunPosition = Vector(256, 256),
@@ -91,7 +90,9 @@ function love.update(dt)
   if aim:len2() > 0 then
     if love.timer.getTime() > bulletTimer + player.fireSpeed then
       local angle = player.angle + math.pi * 0.5 * (love.math.random() - 0.5) * 0.1
-      table.insert(bullets, {position = player.gunPosition:clone(), velocity = Vector(bulletSpeed * math.cos(angle), bulletSpeed * math.sin(angle))})
+      local bulletVelocity = Vector(bulletSpeed * math.cos(angle), bulletSpeed * math.sin(angle))
+      table.insert(bullets, {position = player.gunPosition:clone(), velocity = bulletVelocity})
+      player.position = player.position + bulletVelocity:rotated(math.pi) *.001
       bulletTimer = time
     end
   end
