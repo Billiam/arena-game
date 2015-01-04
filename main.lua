@@ -1,6 +1,9 @@
 local Gamepad = require('lib.joystick')
 local Keyboard = require('lib.keyboard')
 
+
+local Player = require('model.player')
+
 local BulletView = require('view.bullet')
 local PlayerView = require('view.player')
 local OSDView = require('view.osd')
@@ -15,15 +18,7 @@ local bulletTimer = 0
 local gunDistance = 10
 
 function love.load()
-  player = {
-    position = Vector(256, 256),
-    gunPosition = Vector(256, 256),
-    speed = 250,
-    angle = 0,
-    fireSpeed = 0.01,
-    width = 10,
-    height = 20
-  }
+  player = Player.create(Vector(256,256))
 end
 
 function love.joystickadded(new_joystick)
