@@ -49,6 +49,10 @@ function GS.push(to, ...)
 	assert(to, "Missing argument: Gamestate to switch to")
 	assert(to ~= GS, "Can't call push with colon operator")
 	local pre = stack[#stack]
+	--BEGIN ALTERATIONS
+	--modification. Calls pause method on pushed stack
+	;(pre.pause or __NULL__)(pre)
+	--END ALTERATIONS
 	;(to.init or __NULL__)(to)
 	to.init = nil
 	stack[#stack+1] = to
