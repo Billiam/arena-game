@@ -59,6 +59,22 @@ function GS.push(to, ...)
 	return (to.enter or __NULL__)(to, pre, ...)
 end
 
+function GS.reset(to, ...)
+  assert(to, "Missing argument: Gamestate to reset to")
+  assert(to ~= GS, "Can't call reset with colon operator")
+  local pre = stack[#stack]
+	;(pre.leave or __NULL__)(pre)
+  
+	while #stack > 1 do
+    stack[#stack] = nil
+  end
+  
+  ;(to.init or __NULL__)(to)
+	to.init = nil
+	stack[#stack] = to
+	return (to.enter or __NULL__)(to, pre, ...)
+end
+
 function GS.pop(...)
 	assert(#stack > 1, "No more states to pop!")
 	local pre, to = stack[#stack], stack[#stack-1] 
@@ -97,5 +113,7 @@ setmetatable(GS, {__index = function(_, func)
 		return (stack[#stack][func] or __NULL__)(stack[#stack], ...)
 	end
 end})
-
+function GS.debug()
+return stack
+end
 return GS

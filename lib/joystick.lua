@@ -1,7 +1,16 @@
 local Vector = require('vendor.h.vector')
+local Input = require('lib.input')
 
-local function parseJoy(stick, joystick, deadzone)  
-  local joystickVector = Vector(joystick:getGamepadAxis(stick .. 'x'), joystick:getGamepadAxis(stick .. 'y'))
+local defaultDeadzone = 0.105
+
+local function parseJoy(stick, joystick, deadzone)
+  deadzone = deadzone or defaultDeadzone
+  
+  local joystickVector = Vector(
+    joystick:getGamepadAxis(stick .. 'x'), 
+    joystick:getGamepadAxis(stick .. 'y')
+  )
+  
   local magnitude = joystickVector:len()
   
   if (magnitude > deadzone) then
@@ -27,7 +36,7 @@ local function parseDpad(joystick)
   return outputVector
 end
 
-local function parseLeft(joystick, deadzone, zed)
+local function parseLeft(joystick, deadzone)
   local outputVector = parseDpad(joystick)
   
   if outputVector:len2() == 0 then
@@ -40,7 +49,6 @@ end
 local function parseRight(joystick, deadzone)
   return parseJoy('right', joystick, deadzone) or Vector(0,0)
 end
-
 
 return {
   parseLeft = parseLeft,

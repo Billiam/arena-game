@@ -1,21 +1,22 @@
 local Vector = require('vendor.h.vector')
+local Input = require('lib.input')
 
 local function move()
   local moveV = Vector(0,0)
   
-  if love.keyboard.isDown('a') then
+  if Input.key.isDown('a') then
     moveV.x = moveV.x - 1
   end
   
-  if love.keyboard.isDown('e') then
+  if Input.key.isDown('e') then
     moveV.x = moveV.x + 1
   end
   
-  if love.keyboard.isDown(',') then
+  if Input.key.isDown(',') then
     moveV.y = moveV.y - 1
   end
   
-  if love.keyboard.isDown('o') then
+  if Input.key.isDown('o') then
     moveV.y = moveV.y + 1
   end
   
@@ -25,19 +26,19 @@ end
 local function aim()
   local aimV = Vector(0,0)
   
-  if love.keyboard.isDown('left') then
+  if Input.key.isDown('left') then
     aimV.x = aimV.x - 1
   end
   
-  if love.keyboard.isDown('right') then
+  if Input.key.isDown('right') then
     aimV.x = aimV.x + 1
   end
   
-  if love.keyboard.isDown('up') then
+  if Input.key.isDown('up') then
     aimV.y = aimV.y - 1
   end
   
-  if love.keyboard.isDown('down') then
+  if Input.key.isDown('down') then
     aimV.y = aimV.y + 1
   end
   
