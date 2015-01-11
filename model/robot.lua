@@ -2,6 +2,7 @@ local beholder = require('vendor.beholder')
 
 local Robot = {
   isRobot = true,
+  type = 'grunt',
   colliderType = 'grunt',
   height = 15,
   width = 15,

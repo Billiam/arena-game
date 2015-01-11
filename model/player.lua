@@ -1,5 +1,6 @@
 local Vector = require('vendor.h.vector')
 local Gun = require('model.gun')
+local beholder = require('vendor.beholder')
 
 local Player = {
   isPlayer = true,
@@ -29,6 +30,11 @@ function Player.create(input, firing, position)
   local self = setmetatable(instance, Player)
   
   return self
+end
+
+function Player:kill()
+  self.isAlive = false
+  beholder.trigger('PLAYERDEATH', player, grunt)
 end
 
 function Player:setGun(gun)

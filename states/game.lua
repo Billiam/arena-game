@@ -12,9 +12,10 @@ local PlayerInput = require('component.player_input')
 
 -- views
 local BulletView = require('view.bullet')
+local BarrierView = require('view.barrier')
 local PlayerView = require('view.player')
 local OSDView = require('view.osd')
-local RobotView = require('view.robot')
+local GruntView = require('view.grunt')
 local WallView = require('view.wall')
 
 -- models
@@ -22,6 +23,7 @@ local Collection = require('model.collection')
 local Arena = require('model.arena')
 local Player = require('model.player')
 local Robot = require('model.robot')
+local Barrier = require('model.barrier')
 local CollisionResolver = require('model.collision_resolver')
 local Gun = require('model.gun')
 
@@ -31,6 +33,7 @@ local collisionResolver = nil
 local bullets = nil
 local enemies = nil
 local arena = nil
+
 local deadThings = {}
 local eventListeners = {}
 
@@ -57,8 +60,9 @@ function Game.draw()
   BulletView.render(bullets.list)
   OSDView.render()
   WallView.render(arena.walls.list)
-  
-  RobotView.render(enemies.list)
+
+  GruntView.render(enemies:type('grunt'))
+  BarrierView.render(enemies:type('barrier'))
 end
 
 function Game.setup()
@@ -96,15 +100,24 @@ function Game.addWave()
     until position:dist(player.position) > 100
     enemies:add(Robot.create(position))
   end
-end
-
-function Game.updateEnemies(dt)
-  -- move robits
-  for i,robot in ipairs(enemies.list) do
-    robot:update(dt, player)
+  
+  for i = 1,5 do
+    local position
+    repeat
+      position = Vector(
+        love.math.random() * (arena.width - 10) + arena.position.x,
+        love.math.random() * (arena.height - 10) + arena.position.y
+      )
+    until position:dist(player.position) > 10
+    enemies:add(Barrier.create(position, 10, 10))
   end
 end
 
+function Game.updateEnemies(dt)
+  for i,enemy in ipairs(enemies.list) do
+    enemy:update(dt, player)
+  end
+end
 
 local function removeDead(collection)
   local dead = collection:removeDead()
@@ -127,10 +140,6 @@ end
 
 function Game.updatePlayer(dt)
   player:update(dt)
-end
-
-local function cleanupEntities()
-  
 end
 
 function Game.death(player, cause)
