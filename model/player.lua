@@ -17,7 +17,7 @@ function Player.create(input, firing, position)
     gun = Gun.none(),
     width = 10,
     height = 20,
-    speed = 250,
+    speed = 170,
 
     isFiring = false,
     isAlive = true,

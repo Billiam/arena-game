@@ -15,7 +15,13 @@ function Robot.create(position)
   local instance = {
     position = position:clone(),
     angle = 0,
-    speed = 100
+    
+    distance = 15,
+    minimumStep = 0.06,
+    
+    nextStep = love.math.random() + 2,
+    accumulator = 0,
+    patience = 1
   }
   
   local self = setmetatable(instance, Robot.mt)
@@ -24,7 +30,19 @@ function Robot.create(position)
 end
 
 function Robot:update(dt, player)
-  self.position = self.position + (player.position - self.position):normalized() * self.speed * dt
+  self.accumulator = self.accumulator + dt
+  
+  if self.accumulator >= self.nextStep then
+    self.patience = math.max(0, 1 - self.accumulator/30)
+    
+    self.nextStep = self.accumulator + self.minimumStep + self.patience * 0.4 + love.math.random() * self.patience * 1.2
+    
+    self:step(dt, player)
+  end
+end
+
+function Robot:step(dt, player)
+  self.position = self.position + (player.position - self.position):normalized() * self.distance
   beholder.trigger('COLLIDEMOVE', self)
 end
 
