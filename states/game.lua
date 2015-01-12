@@ -22,13 +22,12 @@ local WallView = require('view.wall')
 local Collection = require('model.collection')
 local Arena = require('model.arena')
 local Player = require('model.player')
-local Robot = require('model.robot')
-local Barrier = require('model.barrier')
 local CollisionResolver = require('model.collision_resolver')
 local Gun = require('model.gun')
+local WaveManager = require('model.wave_manager')
 
+local waves = nil
 local player = nil
-local collider = nil
 local collisionResolver = nil
 local bullets = nil
 local enemies = nil
@@ -44,32 +43,31 @@ local Game = {
 setmetatable(Game, {__index = State})
 
 function Game.update(dt)
-  if Controller.pause() then
-    Gamestate.push(Resource.state.pause)
-    return
-  end
-  
+  Game.updateInput(dt)
   Game.updatePlayer(dt)
   Game.updateEnemies(dt)
   Game.updateBullets(dt)
   Game.updateDead(dt)
+  Game.updateWave(dt)
 end
 
 function Game.draw()
   PlayerView.render(player)
   BulletView.render(bullets.list)
   OSDView.render()
-  WallView.render(arena.walls.list)
+  WallView.render(arena)
 
   GruntView.render(enemies:type('grunt'))
   BarrierView.render(enemies:type('barrier'))
 end
 
 function Game.setup()
-  collider = Bump.newWorld()
+  local collider = Bump.newWorld()
   
   bullets = Collection.create(collider)
   enemies = Collection.create(collider)
+  
+  arena = Arena.create(30, collider)
 
   local input = PlayerInput.create(1)
   local firing = Firing.create(bullets)
@@ -78,39 +76,38 @@ function Game.setup()
   player:setGun(Gun.auto())
   
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
-    
+  
   collisionResolver = CollisionResolver.create(collider)
-  collisionResolver:observe('COLLIDEMOVE')
+  collisionResolver:observe()
+  
+  waves = WaveManager.create(player, arena, enemies)
+end
+
+function Game.updateInput()
+  if Controller.pause() then
+    Gamestate.push(Resource.state.pause)
+    return
+  end
+end
+
+function Game.restartWave()
+  waves:restartRound()
+  
+end
+  
+function Game.updateWave()
+  if #enemies.list - #enemies:type('barrier') == 0 then
+    Game.nextWave()
+  end
+end
+
+function Game.nextWave()
+  waves:next()
+  Game.addWave()
 end
 
 function Game.addWave()
-  local wallInset = 30
-  arena = Arena.create(wallInset, collider)
- 
-  player.position = Vector((arena.width - player.width)/2 + arena.position.x, (arena.height - player.height)/2 + arena.position.x)
-  collider:move(player, player.position.x, player.position.y)
-  
-  for i = 1,15 do
-    local position
-    repeat
-      position = Vector(
-        love.math.random() * (arena.width - Robot.width) + arena.position.x,
-        love.math.random() * (arena.height - Robot.height) + arena.position.y
-      )
-    until position:dist(player.position) > 100
-    enemies:add(Robot.create(position))
-  end
-  
-  for i = 1,5 do
-    local position
-    repeat
-      position = Vector(
-        love.math.random() * (arena.width - 10) + arena.position.x,
-        love.math.random() * (arena.height - 10) + arena.position.y
-      )
-    until position:dist(player.position) > 10
-    enemies:add(Barrier.create(position, 10, 10))
-  end
+  waves:addWave()
 end
 
 function Game.updateEnemies(dt)
@@ -160,6 +157,11 @@ function Game.cleanup()
   if collisionResolver then
     collisionResolver:clear()
   end
+  
+  if waves then
+    waves:reset()
+  end
+  
   Game.unregisterListeners()
 end
 

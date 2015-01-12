@@ -1,36 +1,43 @@
 local beholder = require('vendor.beholder')
 
-local Robot = {
-  isRobot = true,
+local Grunt = {
+  isGrunt = true,
   type = 'grunt',
   colliderType = 'grunt',
   height = 15,
   width = 15,
-  isAlive = true
+  isAlive = true,
+  distance = 15,
+  minimumStep = 0.06,
 }
 
-Robot.mt = { __index = Robot }
-Robot.__index = Robot
+Grunt.__index = Grunt
 
-function Robot.create(position)
+function Grunt.create(position)
   local instance = {
     position = position:clone(),
-    angle = 0,
-    
-    distance = 15,
-    minimumStep = 0.06,
-    
+    angle = 0,    
     nextStep = love.math.random() + 2,
     accumulator = 0,
     patience = 1
   }
   
-  local self = setmetatable(instance, Robot.mt)
+  local self = setmetatable(instance, Grunt)
   
   return self
 end
 
-function Robot:update(dt, player)
+function Grunt:place(position)
+  self.position = position
+  beholder.trigger('COLLIDEUPDATE', self) 
+end
+
+function Grunt:move(position)
+  self.position = position
+  beholder.trigger('COLLIDEMOVE', self)
+end
+
+function Grunt:update(dt, player)
   self.accumulator = self.accumulator + dt
   
   if self.accumulator >= self.nextStep then
@@ -42,12 +49,17 @@ function Robot:update(dt, player)
   end
 end
 
-function Robot:step(dt, player)
-  self.position = self.position + (player.position - self.position):normalized() * self.distance
-  beholder.trigger('COLLIDEMOVE', self)
+function Grunt:step(dt, player)
+  self:move(self.position + (player.position - self.position):normalized() * self.distance)
 end
 
-function Robot.collide(robot, other)
+function Grunt:reset()
+  self.patience = 1
+  self.accumulator = 0
+  self.nextStep = love.math.random() + 2
+end
+
+function Grunt.collide(grunt, other)
   if other.isWall then
     return 'slide'
   elseif other.isAlive and (other.isPlayer or other.isBarrier) then
@@ -55,4 +67,4 @@ function Robot.collide(robot, other)
   end
 end
 
-return Robot
+return Grunt

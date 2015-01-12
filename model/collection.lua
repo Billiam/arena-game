@@ -4,6 +4,8 @@ Collection.__index = Collection
 function Collection.create(collider)
   local instance = {
     list = {},
+    listIndex = {},
+    partitionedIndex = {},
     partitionedList = {},
     collider = collider
   }
@@ -57,8 +59,8 @@ function Collection:removeElement(element, index)
 end
 
 function Collection:clear()
-  for i,v in ipairs(self.list) do
-    self:removeElement(v)
+  for i=#self.list,1,-1 do
+    self:remove(i)
   end
 end
 

@@ -29,8 +29,7 @@ function PlayerInput:update(player, dt)
   end
   
   if moving then 
-    player.position = player.position + move * player.speed * dt
-    beholder.trigger('COLLIDEMOVE', player)
+    player:move(player.position + move * player.speed * dt)
   end
 end
 

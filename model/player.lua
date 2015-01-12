@@ -1,13 +1,15 @@
 local Vector = require('vendor.h.vector')
 local Gun = require('model.gun')
-local beholder = require('vendor.beholder')
+local Collidable = require('model.mixin.collidable')
 
+local beholder = require('vendor.beholder')
 local Player = {
   isPlayer = true,
   colliderType = 'player',
 }
 
 Player.__index = Player
+Collidable:mixInto(Player)
 
 local gunDistance = 20
 
@@ -34,7 +36,7 @@ end
 
 function Player:kill()
   self.isAlive = false
-  beholder.trigger('PLAYERDEATH', player, grunt)
+  beholder.trigger('PLAYERDEATH')
 end
 
 function Player:setGun(gun)
@@ -58,7 +60,7 @@ function Player:gunPosition()
 end
 
 function Player.collide(player, other)
-  if other.isAlive and (other.isRobot or other.isBarrier) then 
+  if other.isAlive and (other.isGrunt or other.isBarrier) then 
     return 'touch'
   elseif other.isWall then
     return 'slide'

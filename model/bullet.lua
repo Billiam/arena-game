@@ -28,7 +28,7 @@ function Bullet:update(dt)
 end
 
 function Bullet.collide(bullet, other)
-  if other.isWall or other.isAlive and (other.isBarrier or other.isRobot) then
+  if other.isWall or other.isAlive and (other.isBarrier or other.isGrunt) then
     return 'touch'
   end
 end

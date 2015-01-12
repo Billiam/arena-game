@@ -9,7 +9,7 @@ local callbacks = requireTree('model.collision')
 function CollisionResolver.create(collider)
   local instance = {
     collider = collider,
-    listener = nil
+    listeners = {}
   }
   
   setmetatable(instance, CollisionResolver)
@@ -41,14 +41,24 @@ function CollisionResolver:handleCollisions(collisions)
   end
 end
 
-function CollisionResolver.observe(self, event)
-  self.listener = beholder.observe(event, function(...)
+function CollisionResolver:observe()
+  self.listeners.move = beholder.observe('COLLIDEMOVE', function(...)
     self:move(...)
+  end)
+  
+  self.listeners.place = beholder.observe('COLLIDEUPDATE', function(...)
+    self:place(...)
   end)
 end
 
 function CollisionResolver:clear()
-  beholder.stopObserving(self.listener)
+  for key,id in pairs(self.listeners) do
+    beholder.stopObserving(id)
+  end
+end
+
+function CollisionResolver:place(item)
+  self.collider:update(item, item.position.x, item.position.y)
 end
 
 function CollisionResolver:move(item)

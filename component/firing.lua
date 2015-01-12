@@ -28,8 +28,7 @@ function Firing:update(player, dt)
     end
     
     if kick:len2() then
-      player.position = player.position + kick
-      beholder.trigger('COLLIDEMOVE', player)
+      player:move(player.position + kick)
     end
   end
 end

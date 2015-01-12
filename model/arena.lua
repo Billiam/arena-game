@@ -14,7 +14,8 @@ Arena.__index = Arena
 
 function Arena.create(inset, collider)
   local instance = {
-    walls = Collection.create(collider)
+    walls = Collection.create(collider),
+    visible = true
   }
   
   local self = setmetatable(instance, Arena.mt)
