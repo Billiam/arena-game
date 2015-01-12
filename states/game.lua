@@ -17,6 +17,7 @@ local BarrierView = require('view.barrier')
 local PlayerView = require('view.player')
 local OSDView = require('view.osd')
 local GruntView = require('view.grunt')
+local PersonView = require('view.person')
 local WallView = require('view.wall')
 
 -- models
@@ -31,7 +32,7 @@ local waves = nil
 local player = nil
 local collisionResolver = nil
 local bullets = nil
-local enemies = nil
+local worldEntities = nil
 local arena = nil
 
 local deadThings = {}
@@ -46,7 +47,7 @@ setmetatable(Game, {__index = State})
 function Game.update(dt)
   Game.updateInput(dt)
   Game.updatePlayer(dt)
-  Game.updateEnemies(dt)
+  Game.updateEntities(dt)
   Game.updateBullets(dt)
   Game.updateDead(dt)
   Game.updateWave(dt)
@@ -55,18 +56,19 @@ end
 function Game.draw()
   PlayerView.render(player)
   BulletView.render(bullets.list)
-  OSDView.render(player)
+  OSDView.render(player, waves)
   WallView.render(arena)
 
-  GruntView.render(enemies:type('grunt'))
-  BarrierView.render(enemies:type('barrier'))
+  GruntView.render(worldEntities:type('grunt'))
+  BarrierView.render(worldEntities:type('barrier'))
+  PersonView.render(worldEntities:type('person'))
 end
 
 function Game.setup()
   local collider = Bump.newWorld()
   
   bullets = Collection.create(collider)
-  enemies = Collection.create(collider)
+  worldEntities = Collection.create(collider)
   
   arena = Arena.create(30, collider)
 
@@ -82,7 +84,7 @@ function Game.setup()
   collisionResolver = CollisionResolver.create(collider)
   collisionResolver:observe()
   
-  waves = WaveManager.create(player, arena, enemies)
+  waves = WaveManager.create(player, arena, worldEntities)
 end
 
 function Game.updateInput()
@@ -97,7 +99,7 @@ function Game.restartWave()
 end
   
 function Game.updateWave()
-  if #enemies.list - #enemies:type('barrier') == 0 then
+  if #worldEntities.list - (#worldEntities:type('barrier') + #worldEntities:type('person')) == 0 then
     Game.nextWave()
   end
 end
@@ -111,9 +113,9 @@ function Game.addWave()
   waves:addWave()
 end
 
-function Game.updateEnemies(dt)
-  for i,enemy in ipairs(enemies.list) do
-    enemy:update(dt, player)
+function Game.updateEntities(dt)
+  for i,entity in ipairs(worldEntities.list) do
+    entity:update(dt, player)
   end
 end
 
@@ -126,7 +128,7 @@ local function removeDead(collection)
 end
 
 function Game.updateDead(dt)
-  removeDead(enemies)
+  removeDead(worldEntities)
   removeDead(bullets)
 end
 

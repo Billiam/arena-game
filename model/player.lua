@@ -62,7 +62,7 @@ end
 
 function Player:gunPosition()
   return Vector(
-    self.position.x + self.width/2 + gunDistance * math.cos(self.angle) , 
+    self.position.x + self.width/2 + gunDistance * math.cos(self.angle),
     self.position.y + self.height/2 + gunDistance * math.sin(self.angle)
   )
 end

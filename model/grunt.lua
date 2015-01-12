@@ -1,4 +1,4 @@
-local beholder = require('vendor.beholder')
+local Collidable = require('model.mixin.collidable')
 
 local Grunt = {
   isGrunt = true,
@@ -12,6 +12,7 @@ local Grunt = {
 }
 
 Grunt.__index = Grunt
+Collidable:mixInto(Grunt)
 
 function Grunt.create(position)
   local instance = {
@@ -25,16 +26,6 @@ function Grunt.create(position)
   local self = setmetatable(instance, Grunt)
   
   return self
-end
-
-function Grunt:place(position)
-  self.position = position
-  beholder.trigger('COLLIDEUPDATE', self) 
-end
-
-function Grunt:move(position)
-  self.position = position
-  beholder.trigger('COLLIDEMOVE', self)
 end
 
 function Grunt:update(dt, player)

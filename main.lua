@@ -4,6 +4,7 @@ local Resource = require('resource')
 local State = require('vendor.h.gamestate')
 require('vendor.slam')
 require('lib.graphics')
+require('lib.vector')
 
 local Input = require('lib.input')
 
@@ -19,8 +20,4 @@ end
 function love.update(dt)
   State.current().update(dt)
   Input.clear()
-end
-
-function initializeAudio()
---  sounds.robotHit = love.audio.newSource('assets/audio/hit.ogg', 'static')
 end

@@ -3,10 +3,12 @@ local Vector = require('vendor.h.vector')
 
 local Grunt = require('model.grunt')
 local Barrier = require('model.barrier')
+local Person = require('model.person')
 
 local WaveManager = {
   current = 1,
-  enemies = nil,
+  display = 1,
+  worldEntities = nil,
   player = nil,
   arena = nil
 }
@@ -14,8 +16,9 @@ local WaveManager = {
 WaveManager.__index = WaveManager
 
 local safeDistance = {
-  grunt = 40,
-  barrier = 40
+  grunt = 100,
+  barrier = 40,
+  person = 40
 }
 
 local function getWave(index)
@@ -26,11 +29,11 @@ function WaveManager:currentWave()
   return getWave(self.current)
 end
 
-function WaveManager.create(player, arena, enemies)
+function WaveManager.create(player, arena, worldEntities)
   local instance = {
     player = player,
     arena = arena,
-    enemies = enemies,
+    worldEntities = worldEntities,
   }
   
   setmetatable(instance, WaveManager)
@@ -52,22 +55,23 @@ function WaveManager:addWave()
   
   self:centerPlayer()
   
-  self:addEnemies(Grunt)
-  self:addEnemies(Barrier)
+  self:addWorldEntities(Grunt)
+  self:addWorldEntities(Barrier)
+  self:addWorldEntities(Person)
 end
 
 function WaveManager:restartRound()
   self:centerPlayer()
   
-  for i, enemy in ipairs(self.enemies.list) do
-    local distance = safeDistance[enemy.type]
+  for i, entity in ipairs(self.worldEntities.list) do
+    local distance = safeDistance[entity.type]
 
-    enemy:reset()
-    enemy:place(self:randomPosition(distance, enemy.width, enemy.height))
+    entity:reset()
+    entity:place(self:randomPosition(distance, entity.width, entity.height))
   end
   
-  for i, enemy in ipairs(self.enemies.list) do
-    enemy:move(enemy.position)
+  for i, entity in ipairs(self.worldEntities.list) do
+    entity:move(entity.position)
   end
   
   self.player:reset()
@@ -85,26 +89,31 @@ function WaveManager:randomPosition(distance, width, height)
   return position
 end
 
-function WaveManager:addEnemies(klass)
+function WaveManager:addWorldEntities(klass)
   local distance = safeDistance[klass.type]
-
   for i = 1,self:currentWave()[klass.type] do
-    local enemy = klass.create(self:randomPosition(distance, klass.width, klass.height))
-    self.enemies:add(enemy)
+    local entity = klass.create(self:randomPosition(distance, klass.width, klass.height))
+    self.worldEntities:add(entity)
   end
 end
 
+function WaveManager:waveNumber()
+  return self.display
+end
+
 function WaveManager:next()
+  self.display = self.display + 1
   self.current = self.current + 1
   
   if self.current > 40 then
     self.current = 21
   end
   
-  self.enemies:clear()
+  self.worldEntities:clear()
 end
 
 function WaveManager:reset()
+  self.display = 1
   self.current = 1
 end
 
