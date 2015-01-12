@@ -58,7 +58,7 @@ end
 
 function WaveManager:restartRound()
   self:centerPlayer()
-
+  
   for i, enemy in ipairs(self.enemies.list) do
     local distance = safeDistance[enemy.type]
 
@@ -69,6 +69,8 @@ function WaveManager:restartRound()
   for i, enemy in ipairs(self.enemies.list) do
     enemy:move(enemy.position)
   end
+  
+  self.player:reset()
 end
 
 function WaveManager:randomPosition(distance, width, height)

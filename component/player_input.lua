@@ -13,16 +13,20 @@ function PlayerInput.create(index)
 end
 
 function PlayerInput:update(player, dt)
+  player.isFiring = false
+  
+  if not player.isAlive then
+    return
+  end
+  
   local move, aim = Controller.player(self.index)
-  local aiming = aim:len2() > 0
+  
+  player.isFiring = aim:len2() > 0
   local moving = move:len2() > 0
   
-  if aiming then
-    player.isFiring = true
+  if player.isFiring then
     player.angle = math.atan2(aim.y, aim.x)
   else
-    player.isFiring = false
-    
     if moving then
       player.angle = math.atan2(move.y, move.x)
     end

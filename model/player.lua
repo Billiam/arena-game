@@ -13,7 +13,7 @@ Collidable:mixInto(Player)
 
 local gunDistance = 20
 
-function Player.create(input, firing, position)
+function Player.create(position, input, firing, health)
   local instance = {
     position = position:clone(),
     angle = 0,
@@ -27,6 +27,7 @@ function Player.create(input, firing, position)
     
     input = input,
     firing = firing,
+    health = health
   }
   
   local self = setmetatable(instance, Player)
@@ -34,13 +35,20 @@ function Player.create(input, firing, position)
   return self
 end
 
+function Player:lives()
+  return self.health.value
+end
+
 function Player:kill()
-  self.isAlive = false
-  beholder.trigger('PLAYERDEATH')
+  self.health:remove(self)
 end
 
 function Player:setGun(gun)
   self.gun = gun
+end
+
+function Player:reset()
+  self.isAlive = true
 end
 
 function Player:fire()

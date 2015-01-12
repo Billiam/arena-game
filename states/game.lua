@@ -9,6 +9,7 @@ local beholder = require('vendor.beholder')
 
 local Firing = require('component.firing')
 local PlayerInput = require('component.player_input')
+local Health = require('component.health')
 
 -- views
 local BulletView = require('view.bullet')
@@ -54,7 +55,7 @@ end
 function Game.draw()
   PlayerView.render(player)
   BulletView.render(bullets.list)
-  OSDView.render()
+  OSDView.render(player)
   WallView.render(arena)
 
   GruntView.render(enemies:type('grunt'))
@@ -71,8 +72,9 @@ function Game.setup()
 
   local input = PlayerInput.create(1)
   local firing = Firing.create(bullets)
+  local health = Health.create()
   
-  player = Player.create(input, firing, Vector(256,256))
+  player = Player.create(Vector(200, 200), input, firing, health)
   player:setGun(Gun.auto())
   
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
@@ -92,7 +94,6 @@ end
 
 function Game.restartWave()
   waves:restartRound()
-  
 end
   
 function Game.updateWave()
@@ -144,7 +145,8 @@ function Game.death(player, cause)
 end
 
 function Game.registerListeners()
-  eventListeners['death'] = beholder.observe('PLAYERDEATH', Game.death)
+  eventListeners.death = beholder.observe('PLAYERDEATH', Game.restartWave)
+  eventListeners.gameEnd = beholder.observe('GAMEOVER', Game.death)
 end
 
 function Game.unregisterListeners()
