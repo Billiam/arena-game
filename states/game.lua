@@ -22,6 +22,7 @@ local WallView = require('view.wall')
 
 -- models
 local Collection = require('model.collection')
+local WaveCollection = require('model.wave_collection')
 local Arena = require('model.arena')
 local Player = require('model.player')
 local CollisionResolver = require('model.collision_resolver')
@@ -68,7 +69,7 @@ function Game.setup()
   local collider = Bump.newWorld()
   
   bullets = Collection.create(collider)
-  worldEntities = Collection.create(collider)
+  worldEntities = WaveCollection.create(collider)
   
   arena = Arena.create(30, collider)
 
@@ -99,7 +100,7 @@ function Game.restartWave()
 end
   
 function Game.updateWave()
-  if #worldEntities.list - (#worldEntities:type('barrier') + #worldEntities:type('person')) == 0 then
+  if worldEntities:roundComplete() then
     Game.nextWave()
   end
 end

@@ -10,8 +10,9 @@ function Collection.create(collider)
     collider = collider
   }
   
-  local self = setmetatable(instance, Collection)
-  return self
+  setmetatable(instance, Collection)
+  
+  return instance
 end
 
 function Collection:removeDead()
