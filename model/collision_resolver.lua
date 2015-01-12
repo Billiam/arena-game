@@ -36,7 +36,7 @@ function CollisionResolver:handleCollisions(collisions)
     local callback = collisionCallback(collider1, collider2)
    
     if callback then
-      callback(collider1, collider2)
+      callback(collider1, collider2, collision)
     end
   end
 end
