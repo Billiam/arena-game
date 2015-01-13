@@ -1,3 +1,4 @@
+local Input = require('lib.input')
 local Gamestate = require('vendor.h.gamestate')
 local State = require('lib.state')
 local Resource = require('resource')
@@ -28,8 +29,13 @@ local Player = require('model.player')
 local CollisionResolver = require('model.collision_resolver')
 local Gun = require('model.gun')
 local WaveManager = require('model.wave_manager')
+local Scorekeeper = require('model.scorekeeper')
+
+-- data
+local ScoreTable = require('data.score')
 
 local waves = nil
+local scorekeeper = nil
 local player = nil
 local collisionResolver = nil
 local bullets = nil
@@ -45,6 +51,14 @@ local Game = {
 
 setmetatable(Game, {__index = State})
 
+function Game.enter()
+  State.enter()
+  Game.cleanup()
+  Game.setup()
+  Game.registerListeners()
+  Game.addWave()
+end
+
 function Game.update(dt)
   Game.updateInput(dt)
   Game.updatePlayer(dt)
@@ -57,7 +71,7 @@ end
 function Game.draw()
   PlayerView.render(player)
   BulletView.render(bullets.list)
-  OSDView.render(player, waves)
+  OSDView.render(player, waves, scorekeeper.score)
   WallView.render(arena)
 
   GruntView.render(worldEntities:type('grunt'))
@@ -86,6 +100,7 @@ function Game.setup()
   collisionResolver:observe()
   
   waves = WaveManager.create(player, arena, worldEntities)
+  scorekeeper = Scorekeeper.create(ScoreTable)
 end
 
 function Game.updateInput()
@@ -93,12 +108,17 @@ function Game.updateInput()
     Gamestate.push(Resource.state.pause)
     return
   end
+
+  if Input.key.wasClicked('n') then
+    Game.nextWave()
+  end
 end
 
 function Game.restartWave()
+  scorekeeper:resetCounters()
   waves:restartRound()
 end
-  
+
 function Game.updateWave()
   if worldEntities:roundComplete() then
     Game.nextWave()
@@ -106,7 +126,9 @@ function Game.updateWave()
 end
 
 function Game.nextWave()
+  scorekeeper:resetCounters()
   waves:next()
+
   Game.addWave()
 end
 
@@ -147,9 +169,19 @@ function Game.death(player, cause)
   Gamestate.push(Resource.state.death)
 end
 
+function Game.kill(entity)
+  scorekeeper:add(entity.type)
+end
+
+function Game.rescue(person)
+  scorekeeper:add('person')
+end
+
 function Game.registerListeners()
   eventListeners.death = beholder.observe('PLAYERDEATH', Game.restartWave)
   eventListeners.gameEnd = beholder.observe('GAMEOVER', Game.death)
+  eventListeners.kill = beholder.observe('KILL', Game.kill)
+  eventListeners.rescue = beholder.observe('RESCUE', Game.rescue)
 end
 
 function Game.unregisterListeners()
@@ -167,15 +199,11 @@ function Game.cleanup()
     waves:reset()
   end
   
-  Game.unregisterListeners()
-end
+  if scorekeeper then
+    scorekeeper:reset()
+  end
 
-function Game.enter()
-  State.enter()
-  Game.cleanup()
-  Game.setup()
-  Game.registerListeners()
-  Game.addWave()
+  Game.unregisterListeners()
 end
 
 return Game

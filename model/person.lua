@@ -6,10 +6,10 @@ local Person = {
   isPerson = true,
   type = 'person',
   colliderType = 'person',
-  height = 20,
-  width = 10,
+  height = 40,
+  width = 20,
   
-  speed = 60,
+  speed = 40,
   isAlive = true,
   
   panic = 0.1

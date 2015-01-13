@@ -1,11 +1,12 @@
+local beholder = require('vendor.beholder')
 local Collidable = require('model.mixin.collidable')
 
 local Grunt = {
   isGrunt = true,
   type = 'grunt',
   colliderType = 'grunt',
-  height = 15,
-  width = 15,
+  height = 36,
+  width = 30,
   isAlive = true,
   distance = 15,
   minimumStep = 0.06,
@@ -18,7 +19,7 @@ function Grunt.create(position)
   local instance = {
     position = position:clone(),
     angle = 0,    
-    nextStep = love.math.random() + 2,
+    nextStep = love.math.random() + 0.3,
     accumulator = 0,
     patience = 1
   }
@@ -56,6 +57,11 @@ function Grunt.collide(grunt, other)
   elseif other.isAlive and (other.isPlayer or other.isBarrier) then
     return 'touch'
   end
+end
+
+function Grunt:kill()
+  self.isAlive = false
+  beholder.trigger('KILL', self)
 end
 
 return Grunt

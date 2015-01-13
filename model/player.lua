@@ -18,8 +18,8 @@ function Player.create(position, input, firing, health)
     position = position:clone(),
     angle = 0,
     gun = Gun.none(),
-    width = 10,
-    height = 20,
+    width = 16,
+    height = 36,
     speed = 170,
 
     isFiring = false,
