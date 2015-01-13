@@ -40,7 +40,9 @@ function Player:lives()
 end
 
 function Player:kill()
-  self.health:remove(self)
+  if self.isAlive then
+    self.health:remove(self)
+  end
 end
 
 function Player:setGun(gun)

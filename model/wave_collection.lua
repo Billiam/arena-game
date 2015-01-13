@@ -17,8 +17,12 @@ function WaveCollection.create(collider)
   return instance
 end
 
+function WaveCollection:requiredEnemies()
+  return #self:type('grunt')
+end
+
 function WaveCollection:roundComplete()
-  return #self.list - (#self:type('barrier') + #self:type('person')) == 0
+  return self:requiredEnemies() == 0
 end
 
 return WaveCollection

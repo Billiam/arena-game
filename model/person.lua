@@ -48,6 +48,10 @@ function Person:rescue()
   beholder.trigger('RESCUE', self)
 end
 
+function Person:kill()
+  self.isAlive = false
+end
+
 function Person:update(dt)
   self:updatePanic(dt)
   self:move(self.position + Vector.fromAngle(self.angle, self.speed) * dt)

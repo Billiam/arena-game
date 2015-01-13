@@ -19,6 +19,7 @@ local PlayerView = require('view.player')
 local OSDView = require('view.osd')
 local GruntView = require('view.grunt')
 local PersonView = require('view.person')
+local HulkView = require('view.hulk')
 local WallView = require('view.wall')
 
 -- models
@@ -77,6 +78,7 @@ function Game.draw()
   GruntView.render(worldEntities:type('grunt'))
   BarrierView.render(worldEntities:type('barrier'))
   PersonView.render(worldEntities:type('person'))
+  HulkView.render(worldEntities:type('hulk'))
 end
 
 function Game.setup()

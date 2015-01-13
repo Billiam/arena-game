@@ -24,7 +24,7 @@ function Firing:update(player, dt)
     local kick = Vector(0,0)
     for i,bullet in ipairs(bullets) do
       self.bulletList:add(bullet)
-      kick = kick + bullet.velocity:rotated(math.pi) * bullet.mass
+      kick = kick + bullet.velocity:rotated(math.pi) * bullet.mass * 0.2
     end
     
     if kick:len2() then

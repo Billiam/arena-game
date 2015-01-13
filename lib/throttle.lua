@@ -1,6 +1,5 @@
 local Throttle = {}
 
-Throttle.mt = { __index = Throttle }
 Throttle.__index = Throttle
 
 function Throttle.create(callback, speed)
@@ -10,7 +9,8 @@ function Throttle.create(callback, speed)
     callback = callback
   }
   
-  setmetatable(instance, Throttle.mt)
+  setmetatable(instance, Throttle)
+
   return instance
 end
 

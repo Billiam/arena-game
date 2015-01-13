@@ -4,6 +4,7 @@ local Vector = require('vendor.h.vector')
 local Grunt = require('model.grunt')
 local Barrier = require('model.barrier')
 local Person = require('model.person')
+local Hulk = require('model.hulk')
 
 local WaveManager = {
   current = 1,
@@ -17,8 +18,9 @@ WaveManager.__index = WaveManager
 
 local safeDistance = {
   grunt = 100,
+  hulk = 150,
   barrier = 40,
-  person = 40
+  person = 40,
 }
 
 local function getWave(index)
@@ -58,6 +60,7 @@ function WaveManager:addWave()
   self:addWorldEntities(Grunt)
   self:addWorldEntities(Barrier)
   self:addWorldEntities(Person)
+  self:addWorldEntities(Hulk)
 end
 
 function WaveManager:restartRound()
