@@ -10,7 +10,13 @@ Title = {
 }
 setmetatable(Title, {__index = State})
 
-function Title.update()
+local timer = 0
+
+function Title.enter()
+  timer = 0
+end
+
+function Title.update(dt)
   if Controller.quit() then
     love.event.push('quit')
     return
@@ -19,10 +25,12 @@ function Title.update()
   if Controller.start() then
     Gamestate.push(Resource.state.game)
   end
+
+  timer = timer + dt
 end
 
 function Title.draw()
-  Resource.view.title.render()
+  Resource.view.title.render(timer)
 end
 
 return Title
