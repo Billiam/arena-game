@@ -1,5 +1,3 @@
-require('lib.debug')
-
 local Resource = require('resource')
 local State = require('vendor.h.gamestate')
 require('vendor.slam')
@@ -8,9 +6,14 @@ require('lib.vector')
 
 local Input = require('lib.input')
 
-function love.load()
+function love.load(arg)
+  for i,argument in ipairs(arg) do
+    if argument == '--debug' then
+      require('lib.development')
+    end
+  end
+
   State.switch(Resource.state.title)
-  --  initializeAudio()  
 end
 
 function love.draw()
