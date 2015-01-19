@@ -554,7 +554,6 @@ function lume.hotswap(modname)
     local oldmt, newmt = getmetatable(old), getmetatable(new)
     if oldmt and newmt then update(oldmt, newmt) end
     for k, v in pairs(new) do
-      print(k)
       if type(v) == "table" then update(old[k], v) else old[k] = v end
     end
   end
