@@ -118,7 +118,7 @@ end
 
 function Game.restartWave()
   scorekeeper:resetCounters()
-  waves:restartRound()
+  waves:restartRound(player)
 end
 
 function Game.updateWave()
@@ -139,9 +139,7 @@ function Game.addWave()
 end
 
 function Game.updateEntities(dt)
-  for i,entity in ipairs(worldEntities.list) do
-    entity:update(dt, player)
-  end
+  worldEntities:update(dt, player)
 end
 
 local function removeDead(collection)

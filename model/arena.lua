@@ -25,6 +25,29 @@ function Arena.create(inset, collider)
   return self
 end
 
+function Arena:center(entity)
+  entity:place(self:centerPosition(entity.width, entity.height))
+end
+
+function Arena:centerPosition(width, height)
+  return Vector(
+    (self.width - width)/2 + self.position.x,
+    (self.height - height)/2 + self.position.x
+  )
+end
+
+function Arena:randomPosition(width, height, position, minDistance)
+  local randomPosition
+  repeat
+    randomPosition = Vector(
+      love.math.random() * (self.width - width) + self.position.x,
+      love.math.random() * (self.height - height) + self.position.y
+    )
+  until randomPosition:dist(position) > minDistance
+
+  return randomPosition
+end
+
 function Arena:generateWalls(inset, collider)
   local thickness = 30
 

@@ -4,8 +4,6 @@ Collection.__index = Collection
 function Collection.create(collider)
   local instance = {
     list = {},
-    listIndex = {},
-    partitionedIndex = {},
     partitionedList = {},
     collider = collider
   }
@@ -29,7 +27,11 @@ function Collection:removeDead()
 end
 
 function Collection:type(type)
-  return self.partitionedList[type] or {}
+  if not self.partitionedList[type] then
+    self.partitionedList[type] = {}
+  end
+
+  return self.partitionedList[type]
 end
 
 function Collection:add(element)
@@ -42,7 +44,6 @@ function Collection:add(element)
     
     table.insert(self.partitionedList[element.type], element)
   end
-  
   self.collider:add(element, element.position.x, element.position.y, element.width, element.height)
 end
 

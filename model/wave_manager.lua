@@ -44,12 +44,7 @@ function WaveManager.create(player, arena, worldEntities)
 end
 
 function WaveManager:centerPlayer()
-  -- center player in playable area 
-  local playerPosition = Vector(
-    (self.arena.width - self.player.width)/2 + self.arena.position.x, 
-    (self.arena.height - self.player.height)/2 + self.arena.position.x
-  )
-  self.player:place(playerPosition)
+  self.arena:center(self.player)
 end
 
 function WaveManager:addWave()
@@ -69,8 +64,10 @@ function WaveManager:restartRound()
   for i, entity in ipairs(self.worldEntities.list) do
     local distance = safeDistance[entity.type]
 
-    entity:reset()
-    entity:place(self:randomPosition(distance, entity.width, entity.height))
+    entity:reset(self.player)
+
+    local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
+    entity:place(position)
   end
   
   for i, entity in ipairs(self.worldEntities.list) do
@@ -80,22 +77,11 @@ function WaveManager:restartRound()
   self.player:reset()
 end
 
-function WaveManager:randomPosition(distance, width, height)
-  local position
-  repeat
-    position = Vector(
-      love.math.random() * (self.arena.width - width) + self.arena.position.x,
-      love.math.random() * (self.arena.height - height) + self.arena.position.y
-    )
-  until position:dist(self.player.position) > distance
-
-  return position
-end
-
 function WaveManager:addWorldEntities(klass)
   local distance = safeDistance[klass.type]
   for i = 1,self:currentWave()[klass.type] do
-    local entity = klass.create(self:randomPosition(distance, klass.width, klass.height))
+    local position = self.arena:randomPosition(klass.width, klass.height, self.player.position, distance)
+    local entity = klass.create(position, self.worldEntities)
     self.worldEntities:add(entity)
   end
 end
