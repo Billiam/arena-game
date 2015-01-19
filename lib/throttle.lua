@@ -14,13 +14,17 @@ function Throttle.create(callback, speed)
   return instance
 end
 
-function Throttle:run(...)
-  local time = love.timer.getTime()
-  
-  if self.timer + self.speed < time then
-    local output = self.callback(...)
-    self.timer = time
-    return output
+function Throttle:reset()
+  self.timer = 0
+end
+
+function Throttle:run(dt, ...)
+  self.timer = self.timer + dt
+
+  if self.timer >= self.speed then
+    self.timer = 0
+
+    return self.callback(...)
   end
 end
 

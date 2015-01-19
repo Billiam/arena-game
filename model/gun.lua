@@ -34,14 +34,13 @@ function Gun.create(type)
   return instance
 end
 
-
 function Gun:createShot(player)
   local angle = player.angle + math.pi * 0.5 * (love.math.random() - 0.5) * (1 - self.properties.accuracy)
   return { Bullet.create(player:gunPosition(), angle, self.properties.speed) }
 end
 
-function Gun:fire(...)
-  return self.throttle.run(self.throttle, ...)
+function Gun:fire(dt, ...)
+  return self.throttle:run(dt, ...)
 end
 
 return Gun
