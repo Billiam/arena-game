@@ -13,14 +13,9 @@ Barrier.__index = Barrier
 
 Collidable:mixInto(Barrier)
 
-function Barrier.create(position, width, height)
-  width = width or Barrier.width
-  height = height or Barrier.height
-  
+function Barrier.create(position)
   local instance = {
     position = position:clone(),
-    width = width,
-    height = height,
   }
   
   setmetatable(instance, Barrier)
