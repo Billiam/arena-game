@@ -4,6 +4,10 @@ local Geometry = {
   QUARTERCIRCLE = math.pi * 0.5,
 }
 
+function Geometry.randomAngle()
+  return love.math.random() * Geometry.CIRCLE
+end
+
 function Geometry.radianDiff(a1, a2)
   return (a1 - a2 + Geometry.HALFCIRCLE) % Geometry.CIRCLE - Geometry.HALFCIRCLE
 end

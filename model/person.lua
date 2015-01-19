@@ -1,6 +1,7 @@
 local Collidable = require('model.mixin.collidable')
 local beholder = require('vendor.beholder')
 local Vector = require('vendor.h.vector')
+local Geometry = require('lib.geometry')
 
 local Person = {
   isPerson = true,
@@ -18,14 +19,10 @@ local Person = {
 Person.__index = Person
 Collidable:mixInto(Person)
 
-local function randomAngle()
-  return love.math.random() * math.pi * 2
-end
-
 function Person.create(position)
   local instance = {
     position = position:clone(),
-    angle = randomAngle(),
+    angle = Geometry.randomAngle(),
   }
   
   setmetatable(instance, Person)
@@ -39,7 +36,7 @@ function Person:updatePanic(dt)
   local changed = love.math.random() <= deltaOdds
   
   if changed then
-    self.angle = randomAngle()
+    self:reset()
   end
 end
 
@@ -58,7 +55,7 @@ function Person:update(dt)
 end
 
 function Person:reset()
-  self.angle = randomAngle()
+  self.angle = Geometry.randomAngle()
 end
 
 function Person.collide(person, other)
