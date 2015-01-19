@@ -1,6 +1,7 @@
 local Timer = require('lib.timer')
 local Collidable = require('model.mixin.collidable')
 local Vector = require('vendor.h.vector')
+local Geometry = require('lib.geometry')
 
 local Hulk = {
   isHulk = true,
@@ -8,7 +9,7 @@ local Hulk = {
   colliderType = 'hulk',
   height = 50,
   width = 45,
-  speed = 80,
+  speed = 75,
   isAlive = true
 }
 
@@ -16,18 +17,21 @@ Hulk.__index = Hulk
 Collidable:mixInto(Hulk)
 
 local function randomAngle()
-  return love.math.random() * math.pi * 2
+  return math.floor(love.math.random() * 4) * Geometry.QUARTERCIRCLE
 end
 
-local function indecision()
-  return 0.5 + love.math.random() * 4
+local function attentiveness()
+  return 0.25 + love.math.random() + 2.5
 end
 
-function Hulk.create(position)
+function Hulk.create(position, world)
   local instance = {
     position = position:clone(),
+    timer = Timer.create(attentiveness()),
+    world = world,
+
     angle = randomAngle(),
-    timer = Timer.create(indecision())
+    target = nil,
   }
 
   setmetatable(instance, Hulk)
@@ -35,32 +39,60 @@ function Hulk.create(position)
   return instance
 end
 
-function Hulk:update(dt)
+function Hulk:update(dt, player)
   self.timer:update(dt)
 
-  if self.timer:expired() then
-    self:reset()
+  if self.timer:expired() or self:closeToTarget() then
+    self:reset(player)
   end
 
   self:move(self.position + Vector.fromAngle(self.angle, self.speed) * dt)
 end
 
-function Hulk:redirect(angle)
-  self.angle = angle
-  self.timer:reset(indecision())
+function Hulk:closeToTarget()
+  return self:distanceFromTarget() < 5
 end
 
-function Hulk:reset()
-  self:redirect(randomAngle())
+function Hulk:distanceFromTarget()
+  if self.target and self.target.isAlive then
+    return self.position:dist(self.target.position)
+  else
+    return 0
+  end
+end
+
+function Hulk:newPosition(player)
+  -- find a new target
+  if not (self.target and self.target.isAlive) then
+    local nextTarget = self.world:next('person')
+    self.target = nextTarget or player
+  end
+
+  local missAmount = Vector(love.math.random() * 60 - 30, love.math.random() * 60 - 30)
+  local angle = Geometry.lineAngle(self.target.position + missAmount, self.position)
+
+  -- constrain angle to prevent 180 degree turns
+  local angleChange = Geometry.radianDiff(self.angle, angle)
+
+  -- if greater than 1/16th circle, rotate in given direction
+  if angleChange > math.pi/8 then
+    self.angle = self.angle - Geometry.QUARTERCIRCLE
+  elseif angleChange < -math.pi/8 then
+    self.angle = self.angle + Geometry.QUARTERCIRCLE
+  end
+end
+
+function Hulk:reset(player)
+  self:newPosition(player)
+  self.timer:reset(attentiveness())
 end
 
 function Hulk.collide(hulk, other)
   if other.isWall then
-    return 'slide'
+    return 'bounce'
   elseif other.isAlive and (other.isPlayer or other.isBarrier or other.isPerson) then
     return 'touch'
   end
 end
-
 
 return Hulk
