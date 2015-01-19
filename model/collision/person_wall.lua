@@ -1,14 +1,11 @@
 local Vector = require('vendor.h.vector')
+local Geometry = require('lib.geometry')
 
 return function(person, wall, collision)
-  local circle = math.pi * 2
-  local quarter = math.pi * 0.5
-  
-  local previousAngle = person.angle
-  
   --reverse normal vector angle so that incoming angle can be compared easily
   local normalAngle = Vector(collision.normal.x, collision.normal.y):angleTo()
-  local angleDifference = (((previousAngle - (normalAngle + math.pi)) % circle) + quarter) % circle - quarter
+  local angleDifference = Geometry.radianDiff(normalAngle, person.angle)
+
   local direction = 1
   
   if angleDifference == 0 then
@@ -19,5 +16,5 @@ return function(person, wall, collision)
     direction = 1
   end
   
-  person.angle = normalAngle + quarter * direction
+  person.angle = normalAngle + Geometry.QUARTERCIRCLE * direction
 end
