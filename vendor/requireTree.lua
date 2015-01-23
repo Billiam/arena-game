@@ -8,17 +8,21 @@ local function toFSPath(requirePath) return requirePath:gsub("%.", "/") end
 local function toRequirePath(fsPath) return fsPath:gsub('/','.') end
 local function noExtension(path)     return path:gsub('%.lua$', '') end
 
-local function requireTree(requirePath)
+local function requireTree(requirePath, sort)
   if not cache[requirePath] then
     local result = {}
 
     local fsPath = toFSPath(requirePath)
     local entries = lfs.getDirectoryItems(fsPath)
 
+    if sort then
+      table.sort(entries)
+    end
+
     for _,entry in ipairs(entries) do
       fsPath = toFSPath(requirePath .. '.' .. entry)
       if lfs.isDirectory(fsPath) then
-        result[entry] = requireTree(toRequirePath(fsPath))
+        result[entry] = requireTree(toRequirePath(fsPath), sort)
       else
         entry = noExtension(entry)
         result[entry] = require(toRequirePath(requirePath .. '/' .. entry))
@@ -26,7 +30,7 @@ local function requireTree(requirePath)
     end
 
     cache[requirePath] = result
-  end
+end
 
   return cache[requirePath]
 end
