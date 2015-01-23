@@ -8,6 +8,9 @@ end
 function State.draw()
 end
 
+function State.resize()
+end
+
 function State.init()
 end
 

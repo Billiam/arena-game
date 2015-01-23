@@ -4,6 +4,8 @@ local State = require('lib.state')
 local Resource = require('resource')
 local Controller = require('lib.controller')
 
+local Camera = require('lib.arcade_camera')
+
 local Vector =  require('vendor.h.vector')
 local Bump = require('vendor.bump')
 local beholder = require('vendor.beholder')
@@ -11,16 +13,6 @@ local beholder = require('vendor.beholder')
 local Firing = require('component.firing')
 local PlayerInput = require('component.player_input')
 local Health = require('component.health')
-
--- views
-local BulletView = require('view.bullet')
-local BarrierView = require('view.barrier')
-local PlayerView = require('view.player')
-local OSDView = require('view.osd')
-local GruntView = require('view.grunt')
-local PersonView = require('view.person')
-local HulkView = require('view.hulk')
-local WallView = require('view.wall')
 
 -- models
 local Collection = require('model.collection')
@@ -35,6 +27,7 @@ local Scorekeeper = require('model.scorekeeper')
 -- data
 local ScoreTable = require('data.score')
 
+local camera = nil
 local waves = nil
 local scorekeeper = nil
 local player = nil
@@ -54,6 +47,7 @@ setmetatable(Game, {__index = State})
 
 function Game.enter()
   State.enter()
+
   Game.cleanup()
   Game.setup()
   Game.registerListeners()
@@ -70,30 +64,43 @@ function Game.update(dt)
 end
 
 function Game.draw()
-  PlayerView.render(player)
-  BulletView.render(bullets.list)
-  OSDView.render(player, waves, scorekeeper.score)
-  WallView.render(arena)
+  camera:attach()
 
-  GruntView.render(worldEntities:type('grunt'))
-  BarrierView.render(worldEntities:type('barrier'))
-  PersonView.render(worldEntities:type('person'))
-  HulkView.render(worldEntities:type('hulk'))
+  Resource.view.background.render()
+  Resource.view.player.render(player)
+  Resource.view.bullet.render(bullets.list)
+  Resource.view.wall.render(arena)
+
+  Resource.view.grunt.render(worldEntities:type('grunt'))
+  Resource.view.barrier.render(worldEntities:type('barrier'))
+  Resource.view.person.render(worldEntities:type('person'))
+  Resource.view.hulk.render(worldEntities:type('hulk'))
+
+  Resource.view.hitbox.render(player)
+
+  camera:detach()
+
+--  Camera:letterbox()
+
+  Resource.view.osd.render(player, waves, scorekeeper.score)
 end
 
 function Game.setup()
+  camera = Camera.create(App.width, App.height)
+  camera:init()
+
   local collider = Bump.newWorld()
   
   bullets = Collection.create(collider)
   worldEntities = WaveCollection.create(collider)
   
-  arena = Arena.create(30, collider)
+  arena = Arena.create(App.width, App.height, 15, collider)
 
   local input = PlayerInput.create(1)
   local firing = Firing.create(bullets)
   local health = Health.create()
   
-  player = Player.create(Vector(200, 200), input, firing, health)
+  player = Player.create(Vector(100, 100), input, firing, health)
   player:setGun(Gun.auto())
   
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
@@ -182,6 +189,11 @@ function Game.registerListeners()
   eventListeners.gameEnd = beholder.observe('GAMEOVER', Game.death)
   eventListeners.kill = beholder.observe('KILL', Game.kill)
   eventListeners.rescue = beholder.observe('RESCUE', Game.rescue)
+end
+
+function Game.resize(x,y)
+  --update camera
+  camera:resize(x,y)
 end
 
 function Game.unregisterListeners()
