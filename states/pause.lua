@@ -73,6 +73,13 @@ function Pause.blur(input, cache)
   love.graphics.draw(cache)
 end
 
+function Pause.resize(...)
+  if previousState then
+    previousState.resize(...)
+    canvas = nil
+  end
+end
+
 function Pause.draw()
   if previousState then
     Pause.drawBelow()

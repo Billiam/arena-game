@@ -20,13 +20,13 @@ function Title.render(time)
   if time > duration then
     easing = 1
   else
-    easing = quadEase(time, 0, 1, duration )
+    easing = quadEase(time, 0, 1, duration)
   end
 
   love.graphics.draw(
     img,
     love.graphics.getWidth()/2,
-    love.graphics.getHeight() - 80,
+    love.graphics.getHeight() - 160,
     0,
     easing,
     easing,
