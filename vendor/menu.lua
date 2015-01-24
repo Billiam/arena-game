@@ -32,7 +32,7 @@ return {
       end,
 
       update = function(self, dt)
-        self.animOffset = self.animOffset / (1 + dt*10)
+        self.animOffset = self.animOffset / (1 + dt*20)
       end,
 
       height = function(self)

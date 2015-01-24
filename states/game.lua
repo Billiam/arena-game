@@ -39,6 +39,11 @@ local arena = nil
 local deadThings = {}
 local eventListeners = {}
 
+local debug = {
+  showHitboxes = false,
+  dtModifier = 1
+}
+
 local Game = {
   name = 'game'
 }
@@ -55,6 +60,8 @@ function Game.enter()
 end
 
 function Game.update(dt)
+  dt = dt * debug.dtModifier
+
   Game.updateInput(dt)
   Game.updatePlayer(dt)
   Game.updateEntities(dt)
@@ -76,11 +83,11 @@ function Game.draw()
   Resource.view.person.render(worldEntities:type('person'))
   Resource.view.hulk.render(worldEntities:type('hulk'))
 
-  Resource.view.hitbox.render(player)
+  if debug.showHitboxes then
+    Resource.view.hitbox.render(player)
+  end
 
   camera:detach()
-
---  Camera:letterbox()
 
   Resource.view.osd.render(player, waves, scorekeeper.score)
 end
@@ -118,8 +125,26 @@ function Game.updateInput()
     return
   end
 
-  if Input.key.wasClicked('n') then
+  if App.development then
+    Game.debugInput()
+  end
+end
+
+function Game.debugInput()
+  if Input.key.wasClicked('f1') then
     Game.nextWave()
+  end
+
+  if Input.key.wasClicked('f2') then
+    Game.restartWave()
+  end
+
+  if Input.key.wasClicked('f3') then
+    debug.dtModifier = debug.dtModifier == 1 and 0 or 1
+  end
+
+  if Input.key.wasClicked('f5') then
+    debug.showHitboxes = not debug.showHitboxes
   end
 end
 

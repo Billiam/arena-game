@@ -38,22 +38,22 @@ function Pause.enter(current, previous)
 end
 
 function Pause.update(dt)
-  Input.update()
   menu:update(dt)
 
-  local direction = Input.gamepad.newDirections(1)
-
-  -- TODO: Wrap menu input/updating into domain object
-  if direction.up then
+  if Controller.menuUp(1) then
     menu:keypressed('up')
   end
 
-  if direction.down then
+  if Controller.menuDown(1)then
     menu:keypressed('down')
   end
 
-  if Controller.start() then
+  if Controller.menuSelect(1) then
     menu:keypressed('return')
+  end
+
+  if Controller.unpause() then
+    Gamestate.pop()
   end
 end
 

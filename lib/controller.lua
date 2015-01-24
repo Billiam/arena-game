@@ -12,21 +12,16 @@ function Controller.player(index)
   local aim = Vector(0,0)
   local gamepad = false
   
-  local joystick = Input.gamepads()[index]
-
-  if joystick then
-    local left = Gamepad.parseLeft(joystick)
-    local right = Gamepad.parseRight(joystick)
-    
-    if left:len2() > 0 or right:len2() > 0 then
+  local axes = Input.gamepad.axes(index)
+  if axes and axes.left and axes.right then
+    if axes.left:len2() > 0 or axes.right:len2() > 0 then
       gamepad = true
-
       aim = right
       move = left
     end
   end
   
-  if gamepad == false then
+  if not gamepad then
     move = Keyboard.move()
     aim = Keyboard.aim()
   end
@@ -34,11 +29,40 @@ function Controller.player(index)
   return move, aim
 end
 
--- todo: map actions to keys and gamepad actions
-function Controller.unpause(index)
+function Controller.menuUp(index)
   index = index or 1
-  return Input.gamepad.wasClicked(index, 'start') 
-      or Input.key.wasClicked('p', 'escape')
+  return Input.gamepad.wasPressed(index, 'up')
+    or Input.key.wasPressed(',', 'up')
+end
+
+function Controller.menuDown(index)
+  index = index or 1
+  return Input.gamepad.wasPressed(index, 'down')
+    or Input.key.wasPressed('o', 'down')
+end
+
+function Controller.menuLeft(index)
+  index = index or 1
+  return Input.gamepad.wasPressed(index, 'left')
+    or Input.key.wasPressed('a', 'left')
+end
+
+function Controller.menuRight(index)
+  index = index or 1
+  return Input.gamepad.wasPressed(index, 'right')
+    or Input.key.wasPressed('e', 'right')
+end
+
+function Controller.menuSelect(index)
+  index = index or 1
+
+  return Input.gamepad.wasPressed(index, 'start')
+    or Input.gamepad.wasPressed(index, 'a')
+    or Input.key.wasPressed('return')
+end
+
+function Controller.unpause(index)
+  return Input.key.wasClicked('p', 'escape')
 end
 
 function Controller.back(index)
