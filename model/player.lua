@@ -6,6 +6,8 @@ local beholder = require('vendor.beholder')
 local Player = {
   isPlayer = true,
   colliderType = 'player',
+  width = 12,
+  height = 26,
 }
 
 Player.__index = Player
@@ -18,9 +20,8 @@ function Player.create(position, input, firing, health)
     position = position:clone(),
     angle = 0,
     gun = Gun.none(),
-    width = 16,
-    height = 36,
-    speed = 170,
+
+    speed = 85,
 
     isFiring = false,
     isAlive = true,

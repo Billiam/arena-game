@@ -5,10 +5,10 @@ local Grunt = {
   isGrunt = true,
   type = 'grunt',
   colliderType = 'grunt',
-  height = 36,
-  width = 30,
+  height = 24,
+  width = 18,
   isAlive = true,
-  distance = 15,
+  distance = 8,
   minimumStep = 0.06,
 }
 

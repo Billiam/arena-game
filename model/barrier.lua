@@ -5,8 +5,8 @@ local Barrier = {
   colliderType = 'barrier',
   type = 'barrier',
   isAlive = true,
-  width = 30,
-  height = 30
+  width = 15,
+  height = 15
 }
 
 Barrier.__index = Barrier

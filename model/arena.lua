@@ -9,16 +9,17 @@ local Arena = {
   position = Vector(0,0)
 }
 
-Arena.mt = { __index = Arena }
 Arena.__index = Arena
 
-function Arena.create(inset, collider)
+function Arena.create(width, height, inset, collider)
   local instance = {
+    areaWidth = width,
+    areaHeight = height,
     walls = Collection.create(collider),
     visible = true
   }
   
-  local self = setmetatable(instance, Arena.mt)
+  local self = setmetatable(instance, Arena)
   
   self:generateWalls(inset, collider)
   
@@ -49,17 +50,14 @@ function Arena:randomPosition(width, height, position, minDistance)
 end
 
 function Arena:generateWalls(inset, collider)
-  local thickness = 30
-
-  local screenWidth = love.graphics.getWidth()
-  local screenHeight = love.graphics.getHeight()
+  local thickness = 15
   
-  local horizontalWidth = screenWidth - 2 * inset + 2 * thickness
-  local verticalHeight = screenHeight - 2 * inset + 2 * thickness
+  local horizontalWidth = self.areaWidth - 2 * inset + 2 * thickness
+  local verticalHeight = self.areaHeight - 2 * inset + 2 * thickness
   
   local topLeft = Vector(inset - thickness, inset - thickness)
-  local bottomLeft = Vector(inset - thickness, screenHeight - inset)
-  local topRight = Vector(screenWidth - inset, inset - thickness)
+  local bottomLeft = Vector(inset - thickness, self.areaHeight - inset)
+  local topRight = Vector(self.areaWidth - inset, inset - thickness)
   
   local wall1 = Wall.create(topLeft, horizontalWidth, thickness)
   local wall2 = Wall.create(bottomLeft, horizontalWidth, thickness)

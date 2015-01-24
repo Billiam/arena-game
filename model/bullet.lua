@@ -13,8 +13,8 @@ function Bullet.create(position, angle, speed)
   local instance = {
     position = position:clone(),
     velocity = Vector(speed * math.cos(angle), speed * math.sin(angle)),
-    width = 10,
-    height = 10
+    width = 5,
+    height = 5
   }
   
   setmetatable(instance, Bullet)

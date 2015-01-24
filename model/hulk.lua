@@ -7,9 +7,9 @@ local Hulk = {
   isHulk = true,
   type = 'hulk',
   colliderType = 'hulk',
-  height = 50,
-  width = 45,
-  speed = 75,
+  height = 28,
+  width = 26,
+  speed = 35,
   isAlive = true
 }
 
