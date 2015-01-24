@@ -13,7 +13,7 @@ local function quadEase(t, b, c, d)
   return -c/2 * (math.pow(t,4) - 2) + b;
 end
 
-function Title.render(time)
+function Title.renderLogo(time)
   local img = Resource.image.title
 
   local w = img:getWidth()
@@ -27,7 +27,7 @@ function Title.render(time)
     sh*0.95 / h
   )
   if scale > 1 then
-    scale = math.floor(scale * 2) / 2
+    scale = math.floor(scale * 4) / 4
   end
 
   local easing = scale
@@ -46,6 +46,21 @@ function Title.render(time)
     w/2 - 4,
     h - 10
   )
+end
+
+function Title.renderMenu(menu)
+  love.graphics.push()
+  love.graphics.translate(love.graphics.getWidth() - 300, love.graphics.getHeight()/3)
+  love.graphics.setColor(0, 0, 0, 100)
+  love.graphics.rectangle('fill', 0, 0, 300, 300)
+  menu:draw(50, 50)
+  love.graphics.pop()
+end
+
+function Title.render(time, menu)
+  Resource.view.background.render(love.graphics.getWidth(), love.graphics.getHeight())
+  Title.renderLogo(time)
+  Title.renderMenu(menu)
 end
 
 return Title

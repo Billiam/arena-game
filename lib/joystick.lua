@@ -1,5 +1,4 @@
 local Vector = require('vendor.h.vector')
-local Input = require('lib.input')
 
 local defaultDeadzone = 0.105
 

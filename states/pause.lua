@@ -1,8 +1,9 @@
-Gamestate = require('vendor.h.gamestate')
-State = require('lib.state')
-Resource = require('resource')
-
-Controller = require('lib.controller')
+local Gamestate = require('vendor.h.gamestate')
+local State = require('lib.state')
+local Resource = require('resource')
+local Input = require('lib.input')
+local Controller = require('lib.controller')
+local menu = require('model.ui.pause_menu')
 
 Pause = {
   name = 'pause'
@@ -30,14 +31,29 @@ end
 
 function Pause.enter(current, previous)
   State.enter()
+  menu:reset()
   canvas = nil
   
   previousState = previous
 end
 
 function Pause.update(dt)
-  if Controller.unpause() then
-    Gamestate.pop()
+  Input.update()
+  menu:update(dt)
+
+  local direction = Input.gamepad.newDirections(1)
+
+  -- TODO: Wrap menu input/updating into domain object
+  if direction.up then
+    menu:keypressed('up')
+  end
+
+  if direction.down then
+    menu:keypressed('down')
+  end
+
+  if Controller.start() then
+    menu:keypressed('return')
   end
 end
 
@@ -85,7 +101,7 @@ function Pause.draw()
     Pause.drawBelow()
   end
   
-  Resource.view.pause.render()
+  Resource.view.pause.render(menu)
 end
 
 return Pause

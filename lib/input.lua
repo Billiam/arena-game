@@ -1,3 +1,4 @@
+local Gamepad = require('lib.joystick')
 local Input = {}
 
 local store = {
@@ -6,6 +7,11 @@ local store = {
   buttonsPressed = { },
   buttonsReleased = { },
   buttonsClicked = { },
+
+  axes = { },
+  previousDirections = { },
+  directions = { },
+  newDirections = { },
 
   keysCurrentlyPressed = { },
   keysPressed = { },
@@ -88,6 +94,10 @@ function Input.clear()
   clearTable(store.buttonsPressed)
   clearTable(store.buttonsReleased)
   clearTable(store.buttonsClicked)
+
+  clearTable(store.axes)
+  clearTable(store.newDirections)
+  clearTable(store.directions)
 end
 
 function Input.gamepads()
@@ -136,6 +146,65 @@ end
 function Input.gamepad.wasClicked(index, key)
   local gamepad = store.gamepads[index]
   return store.buttonsClicked[gamepad] and store.buttonsClicked[gamepad][key]
+end
+
+-- check poll-only events
+function Input.update()
+  for i,gamepad in ipairs(store.gamepads) do
+    if not store.previousDirections[gamepad] then
+      store.previousDirections[gamepad] = { }
+    end
+
+    if not store.axes[gamepad] then
+      store.axes[gamepad] = {}
+
+      store.directions[gamepad] = { }
+      store.newDirections[gamepad] = { }
+    end
+
+    local axes = store.axes[gamepad]
+
+    axes.left = Gamepad.parseLeft(gamepad)
+    axes.right = Gamepad.parseRight(gamepad)
+
+    local dir = store.directions[gamepad]
+    local prev = store.previousDirections[gamepad]
+    local new = store.newDirections[gamepad]
+
+    if axes.left.x < 0 then
+      dir.left = true
+      if not prev.left then
+        new.left = true
+      end
+    elseif axes.left.x > 0 then
+      dir.right = true
+      if not prev.right then
+        new.right = true
+      end
+    end
+
+    if axes.left.y < 0 then
+      dir.up = true
+      if not prev.up then
+        new.up = true
+      end
+    elseif axes.left.y > 0 then
+      dir.down = true
+      if not prev.down then
+        new.down = true
+      end
+    end
+
+    prev.left = dir.left
+    prev.right = dir.right
+    prev.up = dir.up
+    prev.down = dir.down
+  end
+end
+
+function Input.gamepad.newDirections(index, direction)
+  local gamepad = store.gamepads[index]
+  return store.newDirections[gamepad] or {}
 end
 
 function Input.gamepad.isDown(index, key)
