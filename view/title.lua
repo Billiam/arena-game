@@ -15,23 +15,36 @@ end
 
 function Title.render(time)
   local img = Resource.image.title
-  local easing
 
-  if time > duration then
-    easing = 1
-  else
-    easing = quadEase(time, 0, 1, duration)
+  local w = img:getWidth()
+  local h = img:getHeight()
+
+  local sw = love.graphics.getWidth()
+  local sh = love.graphics.getHeight()
+
+  local scale = math.min(
+    sw / w,
+    sh*0.95 / h
+  )
+  if scale > 1 then
+    scale = math.floor(scale * 2) / 2
+  end
+
+  local easing = scale
+
+  if time <= duration then
+    easing = easing * quadEase(time, 0, 1, duration)
   end
 
   love.graphics.draw(
     img,
-    love.graphics.getWidth()/2,
-    love.graphics.getHeight() - 160,
+    sw/2,
+    sh * 0.95,
     0,
     easing,
     easing,
-    img:getWidth()/2 - 4,
-    img:getHeight() - 10
+    w/2 - 4,
+    h - 10
   )
 end
 
