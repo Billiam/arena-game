@@ -27,6 +27,7 @@ function love.draw()
 end
 
 function love.update(dt)
+  Input.update()
   State.current().update(dt)
   Input.clear()
 end

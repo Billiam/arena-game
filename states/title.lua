@@ -20,25 +20,17 @@ function Title.enter()
 end
 
 function Title.update(dt)
-  Input.update()
   menu:update(dt)
 
-  if Controller.quit() then
-    love.event.push('quit')
-    return
-  end
-
-  local direction = Input.gamepad.newDirections(1)
-
-  if direction.up then
+  if Controller.menuUp(1) then
     menu:keypressed('up')
   end
 
-  if direction.down then
+  if Controller.menuDown(1)then
     menu:keypressed('down')
   end
 
-  if Controller.start() then
+  if Controller.menuSelect() then
     menu:keypressed('return')
   end
 

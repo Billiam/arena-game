@@ -162,7 +162,7 @@ function Input.update()
       if held.right then
         released.right = true
       end
-      held.right = held
+      held.right = false
     end
 
     if axes.left.y < 0 then
@@ -193,6 +193,11 @@ function Input.update()
       held.down = false
     end
   end
+end
+
+function Input.gamepad.axes(index)
+  local gamepad = pad.list[index]
+  return pad.axes[gamepad]
 end
 
 function Input.gamepad.isDown(index, key)

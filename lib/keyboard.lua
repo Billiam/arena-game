@@ -26,19 +26,19 @@ end
 local function aim()
   local aimV = Vector(0,0)
   
-  if Input.key.isDown('left') then
+  if Input.key.isDown('h') then
     aimV.x = aimV.x - 1
   end
   
-  if Input.key.isDown('right') then
+  if Input.key.isDown('n') then
     aimV.x = aimV.x + 1
   end
   
-  if Input.key.isDown('up') then
+  if Input.key.isDown('c') then
     aimV.y = aimV.y - 1
   end
   
-  if Input.key.isDown('down') then
+  if Input.key.isDown('t') then
     aimV.y = aimV.y + 1
   end
   
