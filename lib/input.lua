@@ -1,69 +1,52 @@
 local Gamepad = require('lib.joystick')
+
 local Input = {}
 
-local store = {
-  gamepads = { },
-  buttonsCurrentlyPressed = { },
-  buttonsPressed = { },
-  buttonsReleased = { },
-  buttonsClicked = { },
+local pad = {
+  list = {},
+  axes = {},
 
-  axes = { },
-  previousDirections = { },
-  directions = { },
-  newDirections = { },
+  held = {},
+  pressed = {},
+  released = {},
+}
 
-  keysCurrentlyPressed = { },
-  keysPressed = { },
-  keysReleased = { },
-  keysClicked = { },
+local keys = {
+  held = {},
+  pressed = {},
+  released = {},
 }
 
 Input.key = {}
 Input.gamepad = {}
 
-
 -- love2d method callbacks
 function love.gamepadpressed(gamepad, key)
-  if not store.buttonsPressed[gamepad] then
-    store.buttonsPressed[gamepad] = {}
-  end
-  if not store.buttonsCurrentlyPressed[gamepad] then
-    store.buttonsCurrentlyPressed[gamepad] = {}
-  end
-  
-  store.buttonsPressed[gamepad][key] = true
-  store.buttonsCurrentlyPressed[gamepad][key] = true
+  pad.pressed[gamepad] = pad.pressed[gamepad] or {}
+  pad.held[gamepad] = pad.held[gamepad] or  {}
+
+  pad.pressed[gamepad][key] = true
+  pad.held[gamepad][key] = true
 end
 
 function love.gamepadreleased(gamepad, key)
-  if not store.buttonsReleased[gamepad] then
-    store.buttonsReleased[gamepad] = {}
-  end
-    
-  store.buttonsReleased[gamepad][key] = true
-  
-  if store.buttonsCurrentlyPressed[gamepad] and store.buttonsCurrentlyPressed[gamepad][key] then
-    store.buttonsCurrentlyPressed[gamepad][key] = nil
-    
-    if not store.buttonsClicked[gamepad] then
-      store.buttonsClicked[gamepad] = {}
-    end
-    store.buttonsClicked[gamepad][key] = true
+  if pad.held[gamepad] and pad.held[gamepad][key] then
+    pad.held[gamepad][key] = nil
+    pad.released[gamepad] = pad.released[gamepad] or {}
+
+    pad.released[gamepad][key] = true
   end
 end
 
 function love.keypressed(key)
-  store.keysPressed[key] = true
-  store.keysCurrentlyPressed[key] = true
+  keys.pressed[key] = true
+  keys.held[key] = true
 end
 
 function love.keyreleased(key)
-  store.keysReleased[key] = true
-  
-  if store.keysCurrentlyPressed[key] then
-    store.keysCurrentlyPressed[key] = nil
-    store.keysClicked[key] = true
+  if keys.held[key] then
+    keys.held[key] = false
+    keys.released[key] = true
   end
 end
 
@@ -74,43 +57,39 @@ function love.joystickadded(joystick)
 end
 
 -- Input state clearing
-local function clearTable(table)
+local function clearTable(table, value)
   for k in pairs(table) do
-    table[k] = nil
+    table[k] = value
   end
 end
 
 function Input.forget()
   Input.clear()
-  clearTable(store.buttonsCurrentlyPressed)
-  clearTable(store.keysCurrentlyPressed)
+
+  clearTable(pad.held, {})
+  clearTable(keys.held)
 end
 
 function Input.clear()
-  clearTable(store.keysPressed)
-  clearTable(store.keysReleased)
-  clearTable(store.keysClicked)
+  clearTable(keys.pressed)
+  clearTable(keys.released)
 
-  clearTable(store.buttonsPressed)
-  clearTable(store.buttonsReleased)
-  clearTable(store.buttonsClicked)
-
-  clearTable(store.axes)
-  clearTable(store.newDirections)
-  clearTable(store.directions)
+  clearTable(pad.pressed, {})
+  clearTable(pad.released, {})
+  clearTable(pad.axes, {})
 end
 
 function Input.gamepads()
-  return store.gamepads
+  return pad.list
 end
 
 function Input.gamepad.add(gamepad)
-  table.insert(store.gamepads, gamepad)
+  table.insert(pad.list, gamepad)
 end
 
-local function anyElement(field, ...)
+local function anyKey(field, ...)
   for i,v in ipairs({...}) do
-    if store[field][v] then
+    if keys[field][v] then
       return true
     end
   end
@@ -118,98 +97,107 @@ end
 
 -- API for checking individual buttons
 function Input.key.wasPressed(...)
-  return anyElement('keysPressed', ...)
-end
-
-function Input.key.wasReleased(...)
-  return anyElement('keysReleased', ...)
+  return anyKey('pressed', ...)
 end
 
 function Input.key.wasClicked(...)
-  return anyElement('keysClicked', ...)
+  return anyKey('released', ...)
 end
 
 function Input.key.isDown(...)
-  return anyElement('keysCurrentlyPressed', ...)
+  return anyKey('held', ...)
 end
 
 function Input.gamepad.wasPressed(index, key)
-  local gamepad = store.gamepads[index]
-  return store.buttonsPressed[gamepad] and store.buttonsPressed[gamepad][key]
-end
-
-function Input.gamepad.wasReleased(index, key)
-  local gamepad = store.gamepads[index]
-  return store[gamepad] and store[gamepad][key]
+  local gamepad = pad.list[index]
+  return pad.pressed[gamepad] and pad.pressed[gamepad][key]
 end
 
 function Input.gamepad.wasClicked(index, key)
-  local gamepad = store.gamepads[index]
-  return store.buttonsClicked[gamepad] and store.buttonsClicked[gamepad][key]
+  local gamepad = pad.list[index]
+  return pad.released[gamepad] and pad.released[gamepad][key]
 end
 
 -- check poll-only events
 function Input.update()
-  for i,gamepad in ipairs(store.gamepads) do
-    if not store.previousDirections[gamepad] then
-      store.previousDirections[gamepad] = { }
-    end
+  for i,gamepad in ipairs(pad.list) do
 
-    if not store.axes[gamepad] then
-      store.axes[gamepad] = {}
+    pad.axes[gamepad] = pad.axes[gamepad] or {}
 
-      store.directions[gamepad] = { }
-      store.newDirections[gamepad] = { }
-    end
+    pad.held[gamepad] = pad.held[gamepad] or {}
+    pad.pressed[gamepad] = pad.pressed[gamepad] or {}
+    pad.released[gamepad] = pad.released[gamepad] or {}
 
-    local axes = store.axes[gamepad]
+    local axes = pad.axes[gamepad]
+
+    local held = pad.held[gamepad]
+    local pressed = pad.pressed[gamepad]
+    local released = pad.released[gamepad]
 
     axes.left = Gamepad.parseLeft(gamepad)
     axes.right = Gamepad.parseRight(gamepad)
 
-    local dir = store.directions[gamepad]
-    local prev = store.previousDirections[gamepad]
-    local new = store.newDirections[gamepad]
-
+    --convert analog input to digital
     if axes.left.x < 0 then
-      dir.left = true
-      if not prev.left then
-        new.left = true
+      if not held.left then
+        pressed.left = true
       end
-    elseif axes.left.x > 0 then
-      dir.right = true
-      if not prev.right then
-        new.right = true
+
+      held.left = true
+    else
+      if held.left then
+        released.left = true
       end
+
+      held.left = false
+    end
+
+    if axes.left.x > 0 then
+      if not held.right then
+        pressed.right = true
+      end
+
+      held.right = true
+    else
+      if held.right then
+        released.right = true
+      end
+      held.right = held
     end
 
     if axes.left.y < 0 then
-      dir.up = true
-      if not prev.up then
-        new.up = true
+      if not held.up then
+        pressed.up = true
       end
-    elseif axes.left.y > 0 then
-      dir.down = true
-      if not prev.down then
-        new.down = true
+
+      held.up = true
+    else
+      if held.up then
+        released.up = true
       end
+
+      held.up = false
     end
 
-    prev.left = dir.left
-    prev.right = dir.right
-    prev.up = dir.up
-    prev.down = dir.down
+    if axes.left.y > 0 then
+      if not held.down then
+        pressed.down = true
+      end
+
+      held.down = true
+    else
+      if held.down then
+        released.down = true
+      end
+
+      held.down = false
+    end
   end
 end
 
-function Input.gamepad.newDirections(index, direction)
-  local gamepad = store.gamepads[index]
-  return store.newDirections[gamepad] or {}
-end
-
 function Input.gamepad.isDown(index, key)
-  local gamepad = store.gamepads[index]
-  return store.buttonsCurrentlyPressed[gamepad] and store.buttonsCurrentlyPressed[gamepad][key]
+  local gamepad = pad.list[index]
+  return pad.held[gamepad] and pad.held[gamepad][key]
 end
 
 return Input
