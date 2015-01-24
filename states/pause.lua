@@ -51,6 +51,10 @@ function Pause.update(dt)
   if Controller.menuSelect(1) then
     menu:keypressed('return')
   end
+
+  if Controller.unpause() then
+    Gamestate.pop()
+  end
 end
 
 function Pause.drawBelow()
