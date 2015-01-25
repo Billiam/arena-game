@@ -85,11 +85,18 @@ function Game.draw()
 
   if debug.showHitboxes then
     Resource.view.hitbox.render(player)
+    Game.drawHitboxes(worldEntities:type('grunt'))
   end
 
   camera:detach()
 
   Resource.view.osd.render(player, waves, scorekeeper.score)
+end
+
+function Game.drawHitboxes(collection)
+  for i,entity in ipairs(collection) do
+    Resource.view.hitbox.render(entity)
+  end
 end
 
 function Game.setup()

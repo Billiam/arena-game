@@ -1,5 +1,6 @@
 local beholder = require('vendor.beholder')
 local Collidable = require('model.mixin.collidable')
+local Geometry = require('lib.geometry')
 
 local Grunt = {
   isGrunt = true,
@@ -18,7 +19,7 @@ Collidable:mixInto(Grunt)
 function Grunt.create(position)
   local instance = {
     position = position:clone(),
-    angle = 0,    
+    angle = love.math.random() * math.pi * 2,
     nextStep = love.math.random() + 0.2,
     accumulator = 0,
     patience = 1
@@ -42,7 +43,9 @@ function Grunt:update(dt, player)
 end
 
 function Grunt:step(dt, player)
-  self:move(self.position + (player.position - self.position):normalize_inplace() * self.distance)
+  local newPosition = self.position + (player.position - self.position):normalize_inplace() * self.distance
+  self.angle = Geometry.lineAngle(self.position, newPosition)
+  self:move(newPosition)
 end
 
 function Grunt:reset()
