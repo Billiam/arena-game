@@ -8,15 +8,17 @@ Recommended: hump.gamestate
 Public Domain - feel free to hack and redistribute this as much as you want.
 ]]--
 return {
-  new = function(width, itemHeight, margin)
-    width = width or 300
-    itemHeight = height or 20
-    margin = margin or 0
+  new = function()
+    local width = 300
+    local itemHeight = 20
+    local margin = 0
+    local paddingLeft = 5
 
     return {
       items = {},
       selected = 1,
       animOffset = 0,
+
 
       addItem = function(self, name, action)
 
@@ -24,6 +26,13 @@ return {
           name = name,
           action = action
         })
+      end,
+
+      setDimensions = function(self, w, h, m, pl)
+        width = w or width
+        itemHeight = h or itemHeight
+        margin = m or margin
+        paddingLeft = pl or paddingLeft
       end,
 
       reset = function(self)
@@ -40,6 +49,9 @@ return {
       end,
 
       draw = function(self, x, y, textColor, activeTextColor, highlightColor)
+        local fontHeight = love.graphics.getFont():getHeight()
+        local fontOffset = itemHeight/2 - fontHeight/2
+
         textColor = textColor or {255, 255, 255, 128}
         activeTextColor = activeTextColor or { 255, 255, 255 }
         highlightColor = highlightColor or { 255, 255, 255, 128 }
@@ -54,7 +66,7 @@ return {
             love.graphics.setColor(unpack(textColor))
           end
 
-          love.graphics.print(item.name, x + 5, y + (itemHeight + margin)*(i-1) + 5)
+          love.graphics.print(item.name, x + paddingLeft, y + (itemHeight + margin)*(i-1) + fontOffset)
         end
 
         love.graphics.setColor(255, 255, 255, 255)
