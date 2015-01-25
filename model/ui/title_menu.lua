@@ -7,14 +7,14 @@ local Resource = require('resource')
 local menu = Menu.new()
 
 menu:addItem(
-  Translator:get('menu', 'new'),
+  Translator.NEW_GAME,
   function()
     Gamestate.push(Resource.state.game)
   end
 )
 
 menu:addItem(
-  Translator:get('menu', 'quit'),
+  Translator.QUIT,
   function()
     love.event.quit()
   end

@@ -7,21 +7,21 @@ local Resource = require('resource')
 local menu = Menu.new()
 
 menu:addItem(
-  Translator:get('menu','resume'),
+  Translator.RESUME,
   function()
     Gamestate.pop()
   end
 )
 
 menu:addItem(
-  Translator:get('dialog','button.abort'),
+  Translator.MAIN_MENU,
   function()
     Gamestate.reset(Resource.state.title)
   end
 )
 
 menu:addItem(
-  Translator:get('menu', 'quit'),
+  Translator.QUIT,
   function()
     love.event.quit()
   end

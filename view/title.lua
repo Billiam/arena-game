@@ -1,6 +1,5 @@
 local Resource = require('resource')
 local Title = {}
-local font = love.graphics.newFont(24)
 
 local duration = 0.75
 
@@ -56,7 +55,7 @@ function Title.renderMenu(menu)
 
   love.graphics.push()
 
-  love.graphics.setFont(font)
+  love.graphics.setFont(Resource.font.noto_black[24])
   love.graphics.translate(love.graphics.getWidth() - 300, love.graphics.getHeight()/3)
 
   love.graphics.setColor(0, 0, 0, 125)

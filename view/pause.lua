@@ -1,3 +1,4 @@
+local Resource = require('resource')
 local Translator = require('lib.translate')
 local Pause = {}
 
@@ -8,9 +9,11 @@ function Pause.render(menu)
   love.graphics.setColor(0, 0, 0, 100)
   love.graphics.rectangle('fill', 0, 0, 400, 200)
 
+  love.graphics.setFont(Resource.font.noto_black[20])
   love.graphics.setColor(220, 220, 220, 255)
-  love.graphics.printf(Translator:get('menu','pause2'), 0, 20, 400, 'center')
+  love.graphics.printf(Translator.PAUSED, 0, 20, 400, 'center')
 
+  love.graphics.setFont(Resource.font.noto_regular[16])
   menu:draw(50, 100)
   love.graphics.pop()
 end
