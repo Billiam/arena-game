@@ -1,11 +1,9 @@
-local barrier = {}
+local  Barrier = {}
 
-function barrier.render(list)
+function Barrier.render(barrier)
   love.graphics.setColor(255, 255, 0, 255)
-  for i,v in ipairs(list) do
-    love.graphics.rectangle("fill", v.position.x, v.position.y, v.width, v.height)
-  end
+  love.graphics.rectangle("fill", barrier.position.x, barrier.position.y, barrier.width, barrier.height)
   love.graphics.setColor(255,255,255,255)
 end
 
-return barrier
+return Barrier

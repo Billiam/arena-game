@@ -26,6 +26,18 @@ function Collection:removeDead()
   return dead
 end
 
+function Collection:zSorted(additional)
+  local collection = {}
+
+  table.insert(collection, additional)
+  for i,v in ipairs(self.list) do
+    table.insert(collection, v)
+  end
+  table.sort(collection, function(a, b) return a.position.y + a.height < b.position.y + b.height end)
+
+  return collection
+end
+
 function Collection:type(type)
   if not self.partitionedList[type] then
     self.partitionedList[type] = {}

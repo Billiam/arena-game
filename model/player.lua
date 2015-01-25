@@ -5,6 +5,7 @@ local Collidable = require('model.mixin.collidable')
 local beholder = require('vendor.beholder')
 local Player = {
   isPlayer = true,
+  type = 'player',
   colliderType = 'player',
   width = 12,
   height = 26,

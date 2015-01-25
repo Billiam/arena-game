@@ -3,7 +3,7 @@ local Geometry = require('lib.geometry')
 
 local Grunt = {}
 
-local function render(grunt)
+function Grunt.render(grunt)
   local img = Resource.image['grunt/stand']
 
   local offset = img:getWidth() - 3
@@ -23,12 +23,6 @@ local function render(grunt)
     1,
     offset
   )
-end
-
-function Grunt.render(grunts)
-  for i,grunt in ipairs(grunts) do
-    render(grunt)
-  end
 end
 
 return Grunt

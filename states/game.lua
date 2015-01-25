@@ -47,7 +47,6 @@ local debug = {
 local Game = {
   name = 'game'
 }
-
 setmetatable(Game, {__index = State})
 
 function Game.enter()
@@ -74,14 +73,13 @@ function Game.draw()
   camera:attach()
 
   Resource.view.background.render()
-  Resource.view.player.render(player)
   Resource.view.bullet.render(bullets.list)
-  Resource.view.wall.render(arena)
 
-  Resource.view.grunt.render(worldEntities:type('grunt'))
-  Resource.view.barrier.render(worldEntities:type('barrier'))
-  Resource.view.person.render(worldEntities:type('person'))
-  Resource.view.hulk.render(worldEntities:type('hulk'))
+  for i,entity in ipairs(worldEntities:zSorted(player)) do
+    Resource.view[entity.type].render(entity)
+  end
+
+  Resource.view.wall.render(arena)
 
   if debug.showHitboxes then
     Resource.view.hitbox.render(player)
@@ -107,7 +105,7 @@ function Game.setup()
   
   bullets = Collection.create(collider)
   worldEntities = WaveCollection.create(collider)
-  
+
   arena = Arena.create(App.width, App.height, 15, collider)
 
   local input = PlayerInput.create(1)
@@ -116,7 +114,7 @@ function Game.setup()
   
   player = Player.create(Vector(100, 100), input, firing, health)
   player:setGun(Gun.auto())
-  
+
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
   
   collisionResolver = CollisionResolver.create(collider)
