@@ -1,3 +1,4 @@
+local Translator = require('lib.translate')
 local Pause = {}
 
 function Pause.render(menu)
@@ -8,7 +9,7 @@ function Pause.render(menu)
   love.graphics.rectangle('fill', 0, 0, 400, 200)
 
   love.graphics.setColor(220, 220, 220, 255)
-  love.graphics.printf("Paused", 0, 20, 400, 'center')
+  love.graphics.printf(Translator:get('menu','pause2'), 0, 20, 400, 'center')
 
   menu:draw(50, 100)
   love.graphics.pop()
