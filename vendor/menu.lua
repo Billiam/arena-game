@@ -13,6 +13,7 @@ return {
     local itemHeight = 20
     local margin = 0
     local paddingLeft = 5
+    local columnWidth = 200
 
     return {
       items = {},
@@ -20,19 +21,30 @@ return {
       animOffset = 0,
 
 
-      addItem = function(self, name, action)
+      addItem = function(self, name, value, action)
+        local item = {
+          name = name
+        }
 
-        table.insert(self.items, {
-          name = name,
-          action = action
-        })
+        if type(value) == 'function' then
+          action = value
+          value = nil
+        end
+
+        item.action = action
+        item.value = value
+
+        table.insert(self.items, item)
+
+        return item
       end,
 
-      setDimensions = function(self, w, h, m, pl)
-        width = w or width
-        itemHeight = h or itemHeight
-        margin = m or margin
-        paddingLeft = pl or paddingLeft
+      setDimensions = function(self, newWidth, newHeight, newColumn, newMargin, newPadding)
+        width = newWidth or width
+        itemHeight = newHeight or itemHeight
+        columnWidth = newColumn or columnWidth
+        margin = newMargin or margin
+        paddingLeft = newPadding or paddingLeft
       end,
 
       reset = function(self)
@@ -49,6 +61,7 @@ return {
       end,
 
       draw = function(self, x, y, textColor, activeTextColor, highlightColor)
+
         local fontHeight = love.graphics.getFont():getHeight()
         local fontOffset = itemHeight/2 - fontHeight/2
 
@@ -66,7 +79,12 @@ return {
             love.graphics.setColor(unpack(textColor))
           end
 
-          love.graphics.print(item.name, x + paddingLeft, y + (itemHeight + margin)*(i-1) + fontOffset)
+          local itemY = y + (itemHeight + margin) * (i-1) + fontOffset
+          love.graphics.print(item.name, x + paddingLeft, itemY)
+
+          if item.value then
+            love.graphics.print(item.value, columnWidth, itemY)
+          end
         end
 
         love.graphics.setColor(255, 255, 255, 255)
