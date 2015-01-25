@@ -1,5 +1,6 @@
 local Resource = require('resource')
 local Title = {}
+local font = love.graphics.newFont(24)
 
 local duration = 0.75
 
@@ -49,12 +50,25 @@ function Title.renderLogo(time)
 end
 
 function Title.renderMenu(menu)
+  menu:setDimensions(300, 80, 0, 30)
+  local menuHeight = menu:height()
+  local previousFont = love.graphics.getFont()
+
   love.graphics.push()
+
+  love.graphics.setFont(font)
   love.graphics.translate(love.graphics.getWidth() - 300, love.graphics.getHeight()/3)
-  love.graphics.setColor(0, 0, 0, 100)
-  love.graphics.rectangle('fill', 0, 0, 300, 300)
-  menu:draw(50, 50)
+
+  love.graphics.setColor(0, 0, 0, 125)
+  love.graphics.rectangle('fill', -20, 20, 320, menuHeight + 50)
+
+  love.graphics.setColor(143, 167, 136, 255)
+  love.graphics.rectangle('fill', 0, 0, 300, menuHeight + 50)
+
+  menu:draw(0, 50, {39, 39, 39, 255}, {39, 39, 39, 255}, {113, 150, 103, 255})
+
   love.graphics.pop()
+  love.graphics.setFont(previousFont)
 end
 
 function Title.render(time, menu)

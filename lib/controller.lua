@@ -16,8 +16,8 @@ function Controller.player(index)
   if axes and axes.left and axes.right then
     if axes.left:len2() > 0 or axes.right:len2() > 0 then
       gamepad = true
-      aim = right
-      move = left
+      aim = axes.right
+      move = axes.left
     end
   end
   
