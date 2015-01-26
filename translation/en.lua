@@ -18,4 +18,5 @@ lang.FULLSCREEN = "Fullscreen"
 lang.BACK = "Back"
 
 lang.FPS = "Frame rate"
+
 return lang
