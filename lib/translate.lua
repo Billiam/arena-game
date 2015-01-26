@@ -1,11 +1,23 @@
-local defaultLanguage = 'es'
-local currentLanguage = nil
+local beholder = require('vendor.beholder')
+
+local defaultLanguage = 'en'
+
+local currentLanguage
+local languageIndex
+
 local strings = {}
 
 local languages = {}
+local languageList = {}
 
-for i,filename in ipairs(love.filesystem.getDirectoryItems('translation')) do
-  languages[filename:gsub('%.lua$', '')] = true
+local availableLanguages = love.filesystem.getDirectoryItems('translation')
+table.sort(availableLanguages)
+
+for i,filename in ipairs(availableLanguages) do
+  local name = filename:gsub('%.lua$', '')
+
+  table.insert(languageList, name)
+  languages[name] = i
 end
 
 local Translate = {}
@@ -20,13 +32,33 @@ setmetatable(Translate, {
   end
 })
 
+function Translate:setLanguageIndex(index)
+  self:setLanguage(languageList[((index - 1) % #languageList) + 1])
+end
+
+function Translate:previousLanguage()
+  self:setLanguageIndex(languageIndex - 1)
+end
+
+function Translate:nextLanguage()
+  self:setLanguageIndex(languageIndex + 1)
+end
+
+function Translate:currentLanguage()
+  return currentLanguage
+end
+
 function Translate:setLanguage(lang)
   if not languages[lang] then
     error('Language not supported')
   end
 
+  languageIndex = languages[lang]
+
   currentLanguage = lang
   strings = require('translation.' .. currentLanguage)
+
+  beholder.trigger('LANGUAGE_UPDATE')
 end
 
 function Translate:languages()
