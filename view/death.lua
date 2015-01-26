@@ -1,4 +1,4 @@
-local Translator = require('lib.translator')
+local Translate = require('lib.translate')
 local Death = {}
 
 function Death.render()
@@ -6,7 +6,7 @@ function Death.render()
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
   
   love.graphics.setColor(255, 255, 255, 255)
-  love.graphics.printf(Translator.GAME_OVER, 0, love.graphics.getHeight() / 2, love.graphics.getWidth(), 'center')
+  love.graphics.printf(Translate.GAME_OVER, 0, love.graphics.getHeight() / 2, love.graphics.getWidth(), 'center')
 end
 
 return Death

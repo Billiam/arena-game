@@ -1,5 +1,5 @@
 local Resource = require('resource')
-local Translator = require('lib.translate')
+local Translate = require('lib.translate')
 local Pause = {}
 
 function Pause.render(menu)
@@ -11,7 +11,7 @@ function Pause.render(menu)
 
   love.graphics.setFont(Resource.font.noto_black[20])
   love.graphics.setColor(220, 220, 220, 255)
-  love.graphics.printf(Translator.PAUSED, 0, 20, 400, 'center')
+  love.graphics.printf(Translate.PAUSED, 0, 20, 400, 'center')
 
   love.graphics.setFont(Resource.font.noto_regular[16])
   menu:draw(50, 100)
