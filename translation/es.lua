@@ -9,5 +9,14 @@ lang.LIVES = "Vidas"
 lang.SCORE = "Puntuaciones"
 lang.ROUND = "Ronda"
 lang.GAME_OVER = "Fin del juego"
+lang.OPTIONS = "Opciones"
+
+lang.LANGUAGE = "Idioma"
+lang.MUSIC = "Volumen de la música"
+lang.VOLUME = "Volumen"
+lang.FULLSCREEN = "Pantalla completa"
+lang.BACK = "Atrás"
+
+lang.FPS = "Frecuencia de refresco"
 
 return lang

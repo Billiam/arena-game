@@ -49,7 +49,7 @@ function Title.renderLogo(time)
 end
 
 function Title.renderMenu(menu)
-  menu:setDimensions(300, 80, 0, 30)
+  menu:setDimensions(300, 80, 200, 0, 30)
   local menuHeight = menu:height()
   local previousFont = love.graphics.getFont()
 

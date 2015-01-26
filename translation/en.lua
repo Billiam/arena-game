@@ -9,5 +9,13 @@ lang.LIVES = "Lives"
 lang.SCORE = "Score"
 lang.ROUND = "Round"
 lang.GAME_OVER = "Game Over"
+lang.OPTIONS = "Options"
 
+lang.LANGUAGE = "Language"
+lang.MUSIC = "Music volume"
+lang.VOLUME = "Volume"
+lang.FULLSCREEN = "Fullscreen"
+lang.BACK = "Back"
+
+lang.FPS = "Frame rate"
 return lang

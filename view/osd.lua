@@ -1,11 +1,14 @@
+local Translate = require('lib.translate')
 local Lives = require('view.lives')
 local Wave = require('view.wave')
 local Score = require('view.score')
 local Osd = {}
 
 function Osd.render(player, waves, score)
-  love.graphics.setColor(50, 50, 50, 255)
-  love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 6, 6)
+  if App.development then
+    love.graphics.setColor(50, 50, 50, 255)
+    love.graphics.print(Translate.FPS .. ': ' .. tostring(love.timer.getFPS( )), 6, 6)
+  end
 
   Lives.render(player)
   Wave.render(waves)

@@ -1,22 +1,48 @@
-local Menu = require('vendor.menu')
-
-local Translator = require('lib.translate')
+local Translate = require('lib.translate')
+local beholder = require('vendor.beholder')
+local Menu = require('lib.dynamic_menu')
 local Gamestate = require('vendor.h.gamestate')
 local Resource = require('resource')
 
-local menu = Menu.new()
+local menu = Menu.create()
 
-menu:addItem(
-  Translator.NEW_GAME,
+local listener = beholder.observe(
+  'LANGUAGE_UPDATE',
   function()
-    Gamestate.push(Resource.state.game)
+    menu:setup()
   end
 )
 
 menu:addItem(
-  Translator.QUIT,
-  function()
-    love.event.quit()
+  {
+    action = function()
+      Gamestate.push(Resource.state.game)
+    end
+  },
+  function(item)
+    item.name = Translate.NEW_GAME
+  end
+)
+
+menu:addItem(
+  {
+    action = function()
+      Gamestate.push(Resource.state.options)
+    end
+  },
+  function(item)
+    item.name = Translate.OPTIONS
+  end
+)
+
+menu:addItem(
+  {
+    action = function()
+      love.event.quit()
+    end
+  },
+  function(item)
+    item.name = Translate.QUIT
   end
 )
 

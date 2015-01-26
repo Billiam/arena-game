@@ -20,23 +20,8 @@ return {
       selected = 1,
       animOffset = 0,
 
-
-      addItem = function(self, name, value, action)
-        local item = {
-          name = name
-        }
-
-        if type(value) == 'function' then
-          action = value
-          value = nil
-        end
-
-        item.action = action
-        item.value = value
-
+      addItem = function(self, item)
         table.insert(self.items, item)
-
-        return item
       end,
 
       setDimensions = function(self, newWidth, newHeight, newColumn, newMargin, newPadding)
