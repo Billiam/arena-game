@@ -58,7 +58,7 @@ function Death.draw()
   Resource.view.death.render()
   
   if entry then
-    Resource.view.nameEntry.render(entry)
+    Resource.view.name_entry.render(entry)
   end
 end
 
