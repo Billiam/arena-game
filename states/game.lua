@@ -39,11 +39,6 @@ local arena = nil
 local deadThings = {}
 local eventListeners = {}
 
-local debug = {
-  showHitboxes = false,
-  dtModifier = 1
-}
-
 local Game = {
   name = 'game'
 }
@@ -59,7 +54,7 @@ function Game.enter()
 end
 
 function Game.update(dt)
-  dt = dt * debug.dtModifier
+  dt = dt * (Game.dtModifier or 1)
 
   Game.updateInput(dt)
   Game.updatePlayer(dt)
@@ -81,7 +76,7 @@ function Game.draw()
 
   Resource.view.wall.render(arena)
 
-  if debug.showHitboxes then
+  if Game.showHitboxes then
     Resource.view.hitbox.render(player)
     Game.drawHitboxes(worldEntities:type('grunt'))
   end
@@ -128,28 +123,6 @@ function Game.updateInput()
   if Controller.pause() then
     Gamestate.push(Resource.state.pause)
     return
-  end
-
-  if App.development then
-    Game.debugInput()
-  end
-end
-
-function Game.debugInput()
-  if Input.key.wasClicked('f1') then
-    Game.nextWave()
-  end
-
-  if Input.key.wasClicked('f2') then
-    Game.restartWave()
-  end
-
-  if Input.key.wasClicked('f3') then
-    debug.dtModifier = debug.dtModifier == 1 and 0 or 1
-  end
-
-  if Input.key.wasClicked('f5') then
-    debug.showHitboxes = not debug.showHitboxes
   end
 end
 
@@ -203,6 +176,7 @@ function Game.updatePlayer(dt)
 end
 
 function Game.death(player, cause)
+  scorekeeper:save()
   Gamestate.push(Resource.state.death)
 end
 

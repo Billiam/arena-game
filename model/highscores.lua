@@ -6,7 +6,6 @@ local defaults = {
   LIMIT = 15,
   KEY = "yes, it's very easy",
   DATA = {
-    {'aaa', 200000, 1},
     {'aaa', 190000, 1},
     {'aaa', 180000, 1},
     {'aaa', 170000, 1},
@@ -71,6 +70,17 @@ function Highscores:load()
   return parsed
 end
 
+function Highscores:lowest()
+  local d = self:data()
+  
+  return d[#d] and d[#d][2]
+end
+
+function Highscores:isHighscore(score)
+  print(score, self:lowest())
+  return score and score > self:lowest()
+end
+
 function Highscores:save()
   local serialized = Serializer.dumps(self:data())
 
@@ -87,10 +97,14 @@ local highscoreSort = function(a, b)
   return b[2] < a[2]
 end
 
-function Highscores:add(name, score)
+function Highscores:add(newScore)
+  if not self:isHighscore(newScore[2]) then
+    return
+  end
+  
   local scores = self:data()
 
-  table.insert(scores, {name, score, os.time()})
+  table.insert(scores, newScore)
 
   table.sort(
     scores,

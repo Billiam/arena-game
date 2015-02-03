@@ -1,6 +1,18 @@
 local Scorekeeper = {}
 Scorekeeper.__index = Scorekeeper
 
+local scores = {}
+
+function Scorekeeper.get(key)
+  return scores[key or 'default']
+end
+
+function Scorekeeper.clear()
+  for i,v in pairs(scores) do
+    scores[i] = nil 
+  end
+end
+
 function Scorekeeper.create(scoreTable)
   local instance = {
     scoreTable = scoreTable,
@@ -32,6 +44,10 @@ function Scorekeeper:add(entityType)
 
   local entityCount = math.min(#entityScore, self.counters[entityType])
   self.score = self.score + entityScore[entityCount]
+end
+
+function Scorekeeper:save(key)
+  scores[key or 'default'] = self.score
 end
 
 function Scorekeeper:resetCounters()

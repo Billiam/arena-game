@@ -16,6 +16,7 @@ lang.MUSIC = "Volumen de la música"
 lang.VOLUME = "Volumen"
 lang.FULLSCREEN = "Pantalla completa"
 lang.BACK = "Atrás"
+lang.HIGHSCORES = nil
 
 lang.FPS = "Frecuencia de refresco"
 

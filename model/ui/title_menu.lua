@@ -26,6 +26,15 @@ menu:addItem(
 
 menu:addItem(
   {
+    name = Translate.HIGHSCORES,
+    action = function()
+      Gamestate.push(Resource.state.leaderboard)
+    end
+  }
+)
+
+menu:addItem(
+  {
     action = function()
       Gamestate.push(Resource.state.options)
     end
