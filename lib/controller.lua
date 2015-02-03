@@ -29,6 +29,12 @@ function Controller.player(index)
   return move, aim
 end
 
+function Controller.menuBack(index)
+  index = index or 1
+  
+  return Input.gamepad.wasPressed(index, 'b')
+end
+
 function Controller.menuUp(index)
   index = index or 1
   return Input.gamepad.wasPressed(index, 'up')
@@ -83,6 +89,18 @@ function Controller.quit(index)
   index = index or 1
   return Input.gamepad.wasClicked(index, 'b') or
       Input.key.wasClicked('escape', 'q')
+end
+
+function Controller.nextLetter(index)
+  index = index or 1
+  return Input.gamepad.wasPressed(index, 'up')
+    or Input.key.wasPressed('up')
+end
+
+function Controller.previousLetter(index)
+  index = index or 1
+  return Input.gamepad.wasPressed(index, 'down')
+    or Input.key.wasPressed('down')
 end
 
 function Controller.start(index)

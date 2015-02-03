@@ -16,6 +16,7 @@ lang.MUSIC = "Music volume"
 lang.VOLUME = "Volume"
 lang.FULLSCREEN = "Fullscreen"
 lang.BACK = "Back"
+lang.HIGHSCORES = "Highscores"
 
 lang.FPS = "Frame rate"
 

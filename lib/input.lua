@@ -17,6 +17,8 @@ local keys = {
   released = {},
 }
 
+local text = {}
+
 Input.key = {}
 Input.gamepad = {}
 
@@ -36,6 +38,10 @@ function love.gamepadreleased(gamepad, key)
 
     pad.released[gamepad][key] = true
   end
+end
+
+function love.textinput(char)
+  table.insert(text, char)
 end
 
 function love.keypressed(key)
@@ -77,6 +83,7 @@ function Input.clear()
   clearTable(pad.pressed, {})
   clearTable(pad.released, {})
   clearTable(pad.axes, {})
+  clearTable(text)
 end
 
 function Input.gamepads()
@@ -203,6 +210,16 @@ end
 function Input.gamepad.isDown(index, key)
   local gamepad = pad.list[index]
   return pad.held[gamepad] and pad.held[gamepad][key]
+end
+
+function Input.text()
+  local i = 0
+  local n = #text
+
+  return function()
+    i = i + 1
+    if i <= n then return text[i] end
+  end
 end
 
 return Input
