@@ -38,13 +38,13 @@ end
 function Controller.menuUp(index)
   index = index or 1
   return Input.gamepad.wasPressed(index, 'up')
-    or Input.key.wasPressed(',', 'up')
+    or Input.key.wasPressed('w', 'up')
 end
 
 function Controller.menuDown(index)
   index = index or 1
   return Input.gamepad.wasPressed(index, 'down')
-    or Input.key.wasPressed('o', 'down')
+    or Input.key.wasPressed('s', 'down')
 end
 
 function Controller.menuLeft(index)
@@ -56,7 +56,7 @@ end
 function Controller.menuRight(index)
   index = index or 1
   return Input.gamepad.wasPressed(index, 'right')
-    or Input.key.wasPressed('e', 'right')
+    or Input.key.wasPressed('d', 'right')
 end
 
 function Controller.menuSelect(index)

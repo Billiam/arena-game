@@ -22,6 +22,10 @@ local text = {}
 Input.key = {}
 Input.gamepad = {}
 
+local function scancode(key)
+  return love.keyboard.getScancodeFromKey(key)
+end
+
 -- love2d method callbacks
 function love.gamepadpressed(gamepad, key)
   pad.pressed[gamepad] = pad.pressed[gamepad] or {}
@@ -45,11 +49,15 @@ function love.textinput(char)
 end
 
 function love.keypressed(key)
+  key = scancode(key)
+
   keys.pressed[key] = true
   keys.held[key] = true
 end
 
 function love.keyreleased(key)
+  key = scancode(key)
+
   if keys.held[key] then
     keys.held[key] = false
     keys.released[key] = true
