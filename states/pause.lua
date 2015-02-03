@@ -57,6 +57,12 @@ function Pause.update(dt)
   end
 end
 
+function Pause.resize(...)
+  if previousState then
+    previousState.resize(...)
+  end
+end
+
 function Pause.drawBelow()
   if not canvas then
     temp1:clear()
