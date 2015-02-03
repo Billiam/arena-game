@@ -1,6 +1,6 @@
 local Vector = require('vendor.h.vector')
 
-local defaultDeadzone = 0.11
+local defaultDeadzone = 0.15
 
 local function parseJoy(stick, joystick, deadzone)
   deadzone = deadzone or defaultDeadzone
