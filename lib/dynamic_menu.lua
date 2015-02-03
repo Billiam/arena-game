@@ -7,7 +7,7 @@ local DynamicMenu = {
 DynamicMenu.__index = DynamicMenu
 DynamicMenu.mt  = {
   __index = function(self, key)
-    return DynamicMenu[key] and DynamicMenu[key] or self.menu[key]
+    return DynamicMenu[key] or self.menu[key]
   end
 }
 
@@ -22,7 +22,9 @@ end
 
 function DynamicMenu:setup()
   for i,item in ipairs(self.list) do
-    item.update(item.menuData)
+    if item.update then
+      item.update(item.menuData)
+    end
   end
 end
 
@@ -38,7 +40,10 @@ function DynamicMenu:addItem(config, setup)
   }
 
   self.menu:addItem(item.menuData)
-  item.update(item.menuData)
+
+  if item.update then
+    item.update(item.menuData)
+  end
 
   table.insert(self.list, item)
 end
