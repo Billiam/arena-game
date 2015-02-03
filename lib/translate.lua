@@ -24,7 +24,7 @@ setmetatable(Translate, {
       Translate:load()
     end
 
-    return strings[key] or 'Untranslated'
+    return strings[key] or 'Untranslated ' ..currentLanguage .. '[' .. key .. ']'
   end
 })
 

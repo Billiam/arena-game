@@ -1,4 +1,3 @@
-local beholder = require('vendor.beholder')
 local Controller = require('lib.controller')
 local PlayerInput = {}
 PlayerInput.__index = PlayerInput
