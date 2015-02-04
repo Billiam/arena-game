@@ -20,4 +20,8 @@ lang.HIGHSCORES = nil
 
 lang.FPS = "Taux d'affichage"
 
+lang.ON = 'Activé'
+lang.OFF = 'Désactivé'
+lang.BORDERLESS = nil
+
 return lang

@@ -2,7 +2,7 @@ local Translate = require('lib.translate')
 local beholder = require('vendor.beholder')
 local Menu = require('lib.dynamic_menu')
 local Gamestate = require('vendor.h.gamestate')
-
+local Display = require('model.display')
 local menu = Menu.create()
 
 local listener = beholder.observe('LANGUAGE_UPDATE', function()
@@ -13,7 +13,7 @@ menu:addItem(
   function(item)
     item.name = Translate.LANGUAGE
     item.value = Translate:currentLanguage()
-    item.action = function(self)
+    item.action = function()
       Translate:nextLanguage()
     end
   end
@@ -38,8 +38,11 @@ menu:addItem(
 menu:addItem(
   function(item)
     item.name = Translate.FULLSCREEN
-    item.value = 'on'
-    item.action = function() end
+    item.value = Translate[Display.currentMode()]
+    
+    item.action = function(self)
+      self.value = Translate[Display.nextMode()]
+    end
   end
 )
 

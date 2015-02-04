@@ -20,4 +20,8 @@ lang.HIGHSCORES = nil
 
 lang.FPS = "Frecuencia de refresco"
 
+lang.ON = 'Habilitado'
+lang.OFF = 'Deshabilitado'
+lang.BORDERLESS = nil
+
 return lang

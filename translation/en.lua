@@ -20,4 +20,8 @@ lang.HIGHSCORES = "Highscores"
 
 lang.FPS = "Frame rate"
 
+lang.ON = 'On'
+lang.OFF = 'Off'
+lang.BORDERLESS = 'Borderless'
+
 return lang
