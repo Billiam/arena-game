@@ -1,5 +1,5 @@
 local bump = {
-  _VERSION     = 'bump v3.1.1',
+  _VERSION     = 'bump v3.1.2',
   _URL         = 'https://github.com/kikito/bump.lua',
   _DESCRIPTION = 'A collision detection library for Lua',
   _LICENSE     = [[
@@ -102,9 +102,9 @@ local function rect_getSegmentIntersectionIndices(x,y,w,h, x1,y1,x2,y2, ti1,ti2)
         elseif r > ti1 then ti1,nx1,ny1 = r,nx,ny
         end
       else -- p > 0
-        if     r < ti1 then return nil
-        elseif r < ti2 then ti2,nx2,ny2 = r,nx,ny
-        end
+      if     r < ti1 then return nil
+      elseif r < ti2 then ti2,nx2,ny2 = r,nx,ny
+      end
       end
     end
   end
@@ -115,20 +115,20 @@ end
 -- Calculates the minkowsky difference between 2 rects, which is another rect
 local function rect_getDiff(x1,y1,w1,h1, x2,y2,w2,h2)
   return x2 - x1 - w1,
-         y2 - y1 - h1,
-         w1 + w2,
-         h1 + h2
+  y2 - y1 - h1,
+  w1 + w2,
+  h1 + h2
 end
 
 local delta = 0.00001 -- floating-point-safe comparisons here, otherwise bugs
 local function rect_containsPoint(x,y,w,h, px,py)
   return px - x > delta      and py - y > delta and
-         x + w - px > delta  and y + h - py > delta
+      x + w - px > delta  and y + h - py > delta
 end
 
 local function rect_isIntersecting(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and x2 < x1+w1 and
-         y1 < y2+h2 and y2 < y1+h1
+      y1 < y2+h2 and y2 < y1+h1
 end
 
 local function rect_getSquareDistance(x1,y1,w1,h1, x2,y2,w2,h2)
@@ -147,10 +147,10 @@ local function rect_detectCollision(x1,y1,w1,h1, x2,y2,w2,h2, goalX, goalY)
   local overlaps, ti, nx, ny
 
   if rect_containsPoint(x,y,w,h, 0,0) then -- item was intersecting other
-    local px, py    = rect_getNearestCorner(x,y,w,h, 0, 0)
-    local wi, hi    = min(w1, abs(px)), min(h1, abs(py)) -- area of intersection
-    ti              = -wi * hi -- ti is the negative area of intersection
-    overlaps = true
+  local px, py    = rect_getNearestCorner(x,y,w,h, 0, 0)
+  local wi, hi    = min(w1, abs(px)), min(h1, abs(py)) -- area of intersection
+  ti              = -wi * hi -- ti is the negative area of intersection
+  overlaps = true
   else
     local ti1,ti2,nx1,ny1 = rect_getSegmentIntersectionIndices(x,y,w,h, 0,0,dx,dy, -math.huge, math.huge)
 
@@ -179,7 +179,7 @@ local function rect_detectCollision(x1,y1,w1,h1, x2,y2,w2,h2, goalX, goalY)
       tx, ty = x1 + dx * ti1, y1 + dy * ti1
     end
   else -- tunnel
-    tx, ty = x1 + dx * ti, y1 + dy * ti
+  tx, ty = x1 + dx * ti, y1 + dy * ti
   end
 
   return {
@@ -370,9 +370,9 @@ local function getDictItemsInCellRect(self, cl,ct,cw,ch)
       for cx=cl,cl+cw-1 do
         local cell = row[cx]
         if cell and cell.itemCount > 0 then -- no cell.itemCount > 1 because tunneling
-          for item,_ in pairs(cell.items) do
-            items_dict[item] = true
-          end
+        for item,_ in pairs(cell.items) do
+          items_dict[item] = true
+        end
         end
       end
     end
@@ -504,6 +504,21 @@ function World:hasItem(item)
   return not not self.rects[item]
 end
 
+function World:getItems()
+  local items, len = {}, 0
+  for item,_ in pairs(self.rects) do
+    len = len + 1
+    items[len] = item
+  end
+  return items, len
+end
+
+function World:countItems()
+  local len = 0
+  for _ in pairs(self.rects) do len = len + 1 end
+  return len
+end
+
 function World:getRect(item)
   local rect = self.rects[item]
   if not rect then
@@ -534,7 +549,7 @@ function World:queryRect(x,y,w,h, filter)
   for item,_ in pairs(dictItemsInCellRect) do
     rect = self.rects[item]
     if (not filter or filter(item))
-    and rect_isIntersecting(x,y,w,h, rect.x, rect.y, rect.w, rect.h)
+        and rect_isIntersecting(x,y,w,h, rect.x, rect.y, rect.w, rect.h)
     then
       len = len + 1
       items[len] = item
@@ -554,7 +569,7 @@ function World:queryPoint(x,y, filter)
   for item,_ in pairs(dictItemsInCellRect) do
     rect = self.rects[item]
     if (not filter or filter(item))
-    and rect_containsPoint(rect.x, rect.y, rect.w, rect.h, x, y)
+        and rect_containsPoint(rect.x, rect.y, rect.w, rect.h, x, y)
     then
       len = len + 1
       items[len] = item
