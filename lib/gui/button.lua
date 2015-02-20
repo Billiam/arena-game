@@ -5,16 +5,14 @@ local Eventable = require('lib.gui.mixin.eventable')
 
 local Focus = require('lib.gui.behavior.focus')
 
+local defaultPadding = 10
+
 local Button = {
   type = 'button',
   
-  x = 100,
-  y = 100,
-  
-  index = 1,
-  
-  width = 100,
-  height = 100,
+  x = 0,
+  y = 0,
+  text = '',
 }
 
 Button.mt = { __index = Button }
@@ -22,57 +20,57 @@ Button.mt = { __index = Button }
 Eventable:mixInto(Button)
 Styleable:mixInto(Button)
 
-function Button.create(parent, data)
-  local instance = {}
-  instance.userData = data or {}
-
-  instance.x, instance.y = instance.userData.x, instance.userData.y
-
+function Button.create(data)
+  local instance = data or {}
   setmetatable(instance, Button.mt)
-
-  instance.parent = parent
-
-  if instance.userData.style then
-    if type(instance.userData.style) == 'table' then
-      instance:addStyle(unpack(instance.userData.style))
-    else
-      instance:addStyle(instance.userData.style)
-    end
-  end
   
+  instance:importStyle(instance.style)
+  instance.style = nil
+
+  instance.height = instance.height or instance:defaultHeight()
+  instance.width = instance.width or instance:defaultWidth()
+
   Focus.register(instance)
-  instance:applyStyles()
 
   return instance
 end
 
-function Button:getText()
-  if type(self.userData.text) == 'function' then
-    return self.userData.text()
-  else
-    return self.userData.text
+function Button:importStyle(style)
+  if style then
+    if type(style) == 'table' then
+      self:addStyle(unpack(style))
+    else
+      self:addStyle(style)
+    end
   end
+
+  self:applyStyles()
 end
 
-function Button:updateDimensions()
-  self.width, self.height = self:calculateDimensions()
-end
-
-function Button:calculateDimensions()
+function Button:defaultHeight()
   local properties = self:getStyleProperties()
 
-  if self.userData.width and self.userData.height then
-    return self.userData.width, self.userData.height
-  end
-  local width, height
+  local font = properties.font or love.graphics.getFont()
+  local padding = properties.padding or defaultPadding
+
+  return font:getHeight() + padding * 2
+end
+
+function Button:defaultWidth()
+  local properties = self:getStyleProperties()
 
   local font = properties.font or love.graphics.getFont()
-  local padding = properties.padding or 10
+  local padding = properties.padding or defaultPadding
 
-  height = self.userData.height or (font:getHeight() + padding * 2)
-  width = self.userData.width or (font:getWidth(self:getText()) + padding * 2)
+  return font:getWidth(self:getText()) + padding * 2
+end
 
-  return width, height
+function Button:getText()
+  if type(self.text) == 'function' then
+    return self.text()
+  else
+    return self.text
+  end
 end
 
 function Button:render()

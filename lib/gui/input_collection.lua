@@ -28,18 +28,29 @@ local function firstIndex(table, item)
   end
 end
 
-function InputCollection:before(element)
-  local index = firstIndex(self.navigation, element) or 0
-  local previous = self.navigation[(index - 2) % #self.navigation + 1]
+local function offsetElement(list, element, amount)
+  local index = firstIndex(list, element) or 0
+  local previous = list[(index - 1 + amount) % #list + 1]
 
-  return previous.input
+  return previous and previous.input
+end
+
+function InputCollection:atIndex(index)
+  local elementData = self.navigation[index]
+
+  return elementData and elementData.input
+end
+
+function InputCollection:index(element)
+  return firstIndex(self.navigation, element)
+end
+
+function InputCollection:before(element)
+  return offsetElement(self.navigation, element, -1)
 end
 
 function InputCollection:after(element)
-  local index = firstIndex(self.navigation, element) or 0
-  local next = self.navigation[index % #self.navigation + 1]
-
-  return next.input
+  return offsetElement(self.navigation, element, 1)
 end
 
 function InputCollection:first(x, y)
@@ -91,7 +102,8 @@ end
 function InputCollection:add(item)
   item.parent = item.parent or self.parent
 
-  self.items[item] = sortFactory(item)
+  local sortData = sortFactory(item)
+  self.items[item] = sortData
 
   if item.index then
     table.insert(self.navigation, sortData)

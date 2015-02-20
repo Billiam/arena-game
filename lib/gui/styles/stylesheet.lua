@@ -10,6 +10,7 @@ return {
     color = { 255, 255, 255, 255},
   },
   ["button.menu"] = {
+    background = {143, 167, 136, 255},
     font = Resource.font.noto_black[20]
   },
 }

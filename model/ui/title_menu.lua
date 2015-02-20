@@ -1,58 +1,54 @@
-local Translate = require('lib.translate')
-local beholder = require('vendor.beholder')
-local Menu = require('lib.dynamic_menu')
-local Gamestate = require('vendor.h.gamestate')
+local gui = require('lib.gui.gui')
 local Resource = require('resource')
+local Gamestate = require('vendor.h.gamestate')
+local Translate = require('lib.translate')
 
-local menu = Menu.create()
+local TitleMenu = {}
 
-local listener = beholder.observe(
-  'LANGUAGE_UPDATE',
-  function()
-    menu:setup()
-  end
-)
-
-menu:addItem(
-  {
-    action = function()
+function TitleMenu.init(scene, width, startX, startY)
+  scene:add(
+    gui:button({
+      x = startX,
+      y = startY,
+      style = "menu",
+      width = width,
+      text = Translate.NEW_GAME,
+    }):on('focus', function()
       Gamestate.push(Resource.state.game)
-    end
-  },
-  function(item)
-    item.name = Translate.NEW_GAME
-  end
-)
+    end)
+  )
 
-menu:addItem(
-  {
-    name = Translate.HIGHSCORES,
-    action = function()
+  scene:down(
+    gui:button({
+      style = "menu",
+      width = width,
+      text = Translate.HIGHSCORES,
+    }):on('focus', function()
       Gamestate.push(Resource.state.leaderboard)
-    end
-  }
-)
+    end)
+  )
 
-menu:addItem(
-  {
-    action = function()
+  scene:down(
+    gui:button({
+      style = "menu",
+      width = width,
+      text = Translate.OPTIONS,
+    }):on('focus', function()
       Gamestate.push(Resource.state.options)
-    end
-  },
-  function(item)
-    item.name = Translate.OPTIONS
-  end
-)
+    end)
+  )
 
-menu:addItem(
-  {
-    action = function()
+  scene:down(
+    gui:button({
+      style = "menu",
+      width = width,
+      text = Translate.QUIT,
+    }):on('focus', function()
       love.event.quit()
-    end
-  },
-  function(item)
-    item.name = Translate.QUIT
-  end
-)
+    end)
+  )
 
-return menu
+  scene:setHoverIndex(1)
+end
+
+return TitleMenu

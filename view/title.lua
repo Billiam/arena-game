@@ -48,15 +48,11 @@ function Title.renderLogo(time)
   )
 end
 
-function Title.renderMenu(menu)
-  menu:setDimensions(300, 80, 200, 0, 30)
-  local menuHeight = menu:height()
-  local previousFont = love.graphics.getFont()
-
+function Title.renderMenu(guiScene)
+  local menuHeight = 200
   love.graphics.push()
 
-  love.graphics.setFont(Resource.font.noto_black[24])
-  love.graphics.translate(love.graphics.getWidth() - 300, love.graphics.getHeight()/3)
+  love.graphics.translate(love.graphics.getWidth() - 300, love.graphics.getHeight()/2 - 200)
 
   love.graphics.setColor(0, 0, 0, 125)
   love.graphics.rectangle('fill', -20, 20, 320, menuHeight + 50)
@@ -64,16 +60,15 @@ function Title.renderMenu(menu)
   love.graphics.setColor(143, 167, 136, 255)
   love.graphics.rectangle('fill', 0, 0, 300, menuHeight + 50)
 
-  menu:draw(0, 50, {39, 39, 39, 255}, {39, 39, 39, 255}, {113, 150, 103, 255})
-
   love.graphics.pop()
-  love.graphics.setFont(previousFont)
+
+  guiScene:render()
 end
 
-function Title.render(time, menu)
+function Title.render(time, guiScene)
   Resource.view.background.render(love.graphics.getWidth(), love.graphics.getHeight())
   Title.renderLogo(time)
-  Title.renderMenu(menu)
+  Title.renderMenu(guiScene)
 end
 
 return Title

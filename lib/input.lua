@@ -1,6 +1,18 @@
 local Gamepad = require('lib.joystick')
 
-local Input = {}
+local Input = {
+  mouse = {},
+  gamepad = {},
+  key = {},
+}
+
+local mouse = {
+  position = {},
+  newPosition = {},
+  held = {},
+  pressed = {},
+  released = {},
+}
 
 local pad = {
   list = {},
@@ -19,14 +31,32 @@ local keys = {
 
 local text = {}
 
-Input.key = {}
-Input.gamepad = {}
-
 local function scancode(key)
   return love.keyboard.getScancodeFromKey(key)
 end
 
 -- love2d method callbacks
+function love.mousemoved(x, y, distx, disty)
+  if x ~= mouse.position.x or y ~= mouse.position.y then
+    mouse.newPosition.x, mouse.newPosition.y = x, y
+  end
+  
+  mouse.position.x, mouse.position.y = x, y
+end
+
+function love.mousepressed(x, y, button)
+  local position = { x = x, y = y }
+  mouse.pressed[button] = position
+  mouse.held[button] = position
+end
+
+function love.mousereleased(x, y, button)
+  if mouse.held[button] then
+    mouse.held[button] = nil
+    mouse.released[button] = { x = x, y = y }
+  end
+end
+
 function love.gamepadpressed(gamepad, key)
   pad.pressed[gamepad] = pad.pressed[gamepad] or {}
   pad.held[gamepad] = pad.held[gamepad] or  {}
@@ -81,16 +111,24 @@ function Input.forget()
   Input.clear()
 
   clearTable(pad.held, {})
+  
   clearTable(keys.held)
+  clearTable(mouse.held)
 end
 
 function Input.clear()
   clearTable(keys.pressed)
   clearTable(keys.released)
 
+  clearTable(mouse.pressed)
+  clearTable(mouse.released)
+  clearTable(mouse.newPosition)
+  
   clearTable(pad.pressed, {})
   clearTable(pad.released, {})
   clearTable(pad.axes, {})
+  
+
   clearTable(text)
 end
 
@@ -131,6 +169,29 @@ end
 function Input.gamepad.wasClicked(index, key)
   local gamepad = pad.list[index]
   return pad.released[gamepad] and pad.released[gamepad][key]
+end
+
+function Input.mouse.position()
+  return mouse.position
+end
+
+function Input.mouse.moved()
+  return mouse.newPosition
+end
+
+function Input.mouse.wasPressed(button)
+  button = button or "l"
+  return mouse.pressed[button]
+end
+
+function Input.mouse.wasClicked(button)
+  button = button or "l"
+  return mouse.released[button]
+end
+
+function Input.mouse.isDown(button)
+  button = button or "l"
+  return mouse.held[button]
 end
 
 -- check poll-only events

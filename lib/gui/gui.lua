@@ -7,8 +7,8 @@ local stylesheet = {}
 setmetatable(Gui, {
   __index = function(gui, key)
     if gui.modules[key] then
-      return function(...)
-        return gui.field(key, ...)
+      return function(gui, options)
+        return gui.field(key, options)
       end
     end
   end
@@ -26,14 +26,15 @@ function Gui.getStylesheet()
   return stylesheet
 end
 
-function Gui.field(type, ...)
+function Gui.field(type, options)
   local field = Gui.modules[type]
-  
+
   if not field then
+    error(field .. ' is not a valid field')
     return
   end
-  
-  local item = field.create(...)
+
+  local item = field.create(options)
 
   return item
 end
