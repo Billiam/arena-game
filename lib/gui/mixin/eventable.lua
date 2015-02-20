@@ -26,10 +26,14 @@ function Eventable:off(eventName, callback)
   else
     self:getEvents()[eventName] = {}
   end
+
+  return self
 end
 
 function Eventable:on(eventName, callback)
   table.insert(self:getEvent(eventName), callback)
+
+  return self
 end
 
 function Eventable:trigger(eventName, target)
@@ -45,7 +49,8 @@ function Eventable:trigger(eventName, target)
   if propagate and self.parent and self.parent.trigger then
     self.parent:trigger(eventName, self)
   end
-  
+
+  return self
 end
 
 return Eventable
