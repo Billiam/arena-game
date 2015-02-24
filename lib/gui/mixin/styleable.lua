@@ -1,6 +1,7 @@
 local gui = require('lib.gui.gui')
 local Mixin = require('lib.mixin')
 local Styleable = {}
+local Combinations = require('vendor.combination')
 
 setmetatable(Styleable, {__index = Mixin})
 
@@ -59,29 +60,24 @@ function Styleable:removeStyle(name)
 end
 
 local function styleCombinations(type, styles, selectors)
-  local combo = {type}
-  
+  local combinable = {type}
+
   for style in pairs(styles) do
-    table.insert(combo, style)
-    table.insert(combo, type .. style)
-    for selector in pairs(selectors) do
-      table.insert(combo, style .. selector)
-      table.insert(combo, type .. style .. selector)
-    end
+    table.insert(combinable, style)
   end
-  
+
   for selector in pairs(selectors) do
-    table.insert(combo, selector)
-    table.insert(combo, type .. selector)
+    table.insert(combinable, selector)
   end
-  
-  return combo
+
+  return Combinations.joined(combinable)
 end
 
 function Styleable:applyStyles()
   local stylesheet = gui.getStylesheet()
   
   local properties = self:getStyleProperties()
+
   local styleNames = styleCombinations(self.type, self:getStyles(), self:getSelectors())
 
   for i,name in ipairs(styleNames) do
