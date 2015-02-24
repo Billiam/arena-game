@@ -13,4 +13,10 @@ return {
     background = {143, 167, 136, 255},
     font = Resource.font.noto_black[20]
   },
+  ["button.overlay"] = {
+    background = {255, 255, 255, 0},
+  },
+  ["button.overlay:hover"] = {
+    background = { 255, 255, 255, 0 }
+  }
 }

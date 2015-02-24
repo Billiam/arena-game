@@ -1,50 +1,49 @@
 local Translate = require('lib.translate')
-
-local Menu = require('lib.dynamic_menu')
 local Gamestate = require('vendor.h.gamestate')
-local beholder = require('vendor.beholder')
 local Resource = require('resource')
 
-local menu = Menu.create()
+local gui = require('lib.gui.init')
 
-local listener = beholder.observe(
-  'LANGUAGE_UPDATE',
-  function()
-    menu:setup()
-  end
-)
+local PauseMenu = {}
 
-menu:addItem(
-  {
-    action = function()
+function PauseMenu.init(x, y, width, scene)
+  scene = scene or gui:scene()
+
+  scene:add(
+    gui:button({
+      x = x,
+      y = y,
+      style = "overlay",
+      width = width,
+      text = Translate.RESUME,
+    }):on('focus', function()
       Gamestate.pop()
-    end
-  },
-  function(item)
-    item.name = Translate.RESUME
-  end
-)
+    end)
+  )
 
-menu:addItem(
-  {
-    action = function()
+  scene:down(
+    gui:button({
+      style = "overlay",
+      width = width,
+      text = Translate.MAIN_MENU,
+    }):on('focus', function()
       Gamestate.reset(Resource.state.title)
-    end
-  },
-  function(item)
-    item.name = Translate.MAIN_MENU
-  end
-)
+    end)
+  )
 
-menu:addItem(
-  {
-    action =  function()
+  scene:down(
+    gui:button({
+      style = "overlay",
+      width = width,
+      text = Translate.QUIT,
+    }):on('focus', function()
       love.event.quit()
-    end
-  },
-  function(item)
-    item.name = Translate.QUIT
-  end
-)
+    end)
+  )
 
-return menu
+  scene:setHoverIndex(1)
+
+  return scene
+end
+
+return PauseMenu

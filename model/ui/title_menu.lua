@@ -1,15 +1,17 @@
-local gui = require('lib.gui.gui')
+local gui = require('lib.gui.init')
 local Resource = require('resource')
 local Gamestate = require('vendor.h.gamestate')
 local Translate = require('lib.translate')
 
 local TitleMenu = {}
 
-function TitleMenu.init(scene, width, startX, startY)
+function TitleMenu.init(width, x, y, scene)
+  scene = scene or gui:scene()
+
   scene:add(
     gui:button({
-      x = startX,
-      y = startY,
+      x = x,
+      y = y,
       style = "menu",
       width = width,
       text = Translate.NEW_GAME,
@@ -49,6 +51,8 @@ function TitleMenu.init(scene, width, startX, startY)
   )
 
   scene:setHoverIndex(1)
+
+  return scene
 end
 
 return TitleMenu

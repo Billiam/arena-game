@@ -86,6 +86,12 @@ function Scene:render()
       element:render()
     end
   end
+
+  self:resetRender()
+end
+
+function Scene:resetRender()
+  love.graphics.setColor({255, 255, 255, 255})
 end
 
 function Scene:setHoverIndex(index)

@@ -6,7 +6,6 @@ local Controller = require('lib.controller')
 local Input = require('lib.input')
 
 local TitleMenu = require('model.ui.title_menu')
-local gui = require('lib.gui.init')
 
 local scene
 
@@ -27,15 +26,14 @@ function Title.resume()
 end
 
 function Title.initGui()
-  scene = gui:scene()
-  TitleMenu.init(scene, 300, love.graphics.getWidth() - 300, love.graphics.getHeight()/2 - 200)
+  scene = TitleMenu.init(300, love.graphics.getWidth() - 300, love.graphics.getHeight()/2 - 200)
 end
 
 function Title.resize()
   --retain current hover state during rebuild
   local oldState = scene
 
-  Title.initGui()
+  TitleMenu.initGui()
 
   -- set the hover element to the old hover element
   scene:setHoverIndex(oldState:hoverIndex())
