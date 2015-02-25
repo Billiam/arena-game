@@ -7,7 +7,8 @@ local Scene = {
 
 local Dir = {
   RIGHT = 'right',
-  DOWN = 'down'
+  DOWN = 'down',
+  ROw = 'row'
 }
 
 Scene.mt = {
@@ -59,6 +60,9 @@ local function setPosition(scene, grow, item)
   elseif grow == Dir.DOWN then
     item.x = item.x + scene.previousElement.x
     item.y = item.y + scene.previousElement.height + scene.previousElement.y
+  elseif grow == Dir.ROW then
+    item.x = item.x + scene.rowElement.x
+    item.y = item.y + scene.previousElement.height + scene.previousElement.y
   end
 end
 
@@ -67,6 +71,11 @@ function Scene:add(item, grow)
   setIndex(self, item)
 
   self.previousElement = item
+
+  if not self.rowElement or grow == Dir.ROW then
+    self.rowElement = item
+  end
+
   self.inputCollection:add(item)
 
   return self
@@ -78,6 +87,10 @@ end
 
 function Scene:down(item)
   return self:add(item, Dir.DOWN)
+end
+
+function Scene:row(item)
+  return self:add(item, Dir.ROW)
 end
 
 function Scene:render()

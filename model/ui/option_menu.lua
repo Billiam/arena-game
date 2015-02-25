@@ -1,58 +1,143 @@
 local Translate = require('lib.translate')
-local beholder = require('vendor.beholder')
-local Menu = require('lib.dynamic_menu')
 local Gamestate = require('vendor.h.gamestate')
 local Display = require('model.display')
-local menu = Menu.create()
+local gui = require('lib.gui.init')
+--local menu = Menu.create()
 
-local listener = beholder.observe('LANGUAGE_UPDATE', function()
-  menu:setup()
-end)
+local OptionMenu = {}
 
-menu:addItem(
-  function(item)
-    item.name = Translate.LANGUAGE
-    item.value = Translate:currentLanguage()
-    item.action = function()
+function OptionMenu.init(x, y, width, scene)
+  scene = scene or gui:scene()
+
+  local labelWidth = 240
+  local inputWidth = 220
+
+  -- Language selection
+  scene:add(
+    gui:label({
+      width = labelWidth,
+      x = x,
+      y = y,
+      text = function() return Translate.LANGUAGE end
+    })
+  )
+
+  scene:right(
+    gui:button({
+      index = false,
+      width = 30,
+      text = '<',
+    }):on('focus', function()
+      Translate:previousLanguage()
+    end)
+  )
+
+  scene:right(
+    gui:button({
+      width = 100,
+      width = inputWidth - 30 * 2,
+      text = function() return Translate:currentLanguage() end
+    }):on('focus', function()
       Translate:nextLanguage()
-    end
-  end
-)
+    end)
+  )
 
-menu:addItem(
-  function(item)
-    item.name = Translate.VOLUME
-    item.value = '100%'
-    item.action = function()end
-  end
-)
+  scene:right(
+    gui:button({
+      index = false,
+      width = 30,
+      text = '>',
+    }):on('focus', function()
+      Translate:nextLanguage()
+    end)
+  )
 
-menu:addItem(
-  function(item)
-    item.name = Translate.MUSIC
-    item.value = '100%'
-    item.action = function() end
-  end
-)
+  -- Sound volume
+  scene:row(
+    gui:label({
+      index = false,
+      width = labelWidth,
+      text = function() return Translate.VOLUME end
+    })
+  )
 
-menu:addItem(
-  function(item)
-    item.name = Translate.FULLSCREEN
-    item.value = Translate[Display.currentMode()]
-    
-    item.action = function(self)
-      self.value = Translate[Display.nextMode()]
-    end
-  end
-)
+  scene:right(
+    gui:button({
+      width = inputWidth,
+      text = '100% (not working)'
+    })
+  )
 
-menu:addItem(
-  function(item)
-    item.name = Translate.BACK
-    item.action = function()
+  -- Music
+  scene:row(
+    gui:label({
+      index = false,
+      width = labelWidth,
+      text = function() return Translate.MUSIC end
+    })
+  )
+
+  scene:right(
+    gui:button({
+      width = inputWidth,
+      text = '100% (not working)'
+    })
+  )
+
+
+  -- Fullscreen selection
+  scene:row(
+    gui:label({
+      width = labelWidth,
+      text = function() return Translate.FULLSCREEN end
+    })
+  )
+
+  scene:right(
+    gui:button({
+      index = false,
+      width = 30,
+      text = '<',
+    }):on('focus', function()
+      Display.previousMode()
+    end)
+  )
+
+  scene:right(
+    gui:button({
+      width = 100,
+      width = inputWidth - 30 * 2,
+      text = function() return Translate[Display.currentMode()] end
+    }):on('focus', function()
+      Display:nextMode()
+    end)
+  )
+
+  scene:right(
+    gui:button({
+      index = false,
+      width = 30,
+      text = '>',
+    }):on('focus', function()
+      Display.nextMode()
+    end)
+  )
+
+
+  -- Back
+  scene:row(
+    gui:button({
+      y = 30,
+      width = inputWidth + labelWidth,
+      text = function() return Translate.BACK end
+    }):on('focus', function()
       Gamestate.pop()
-    end
-  end
-)
+    end)
+  )
 
-return menu
+  scene:setHoverIndex(1)
+
+  return scene
+end
+
+return OptionMenu
