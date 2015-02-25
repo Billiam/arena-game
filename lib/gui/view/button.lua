@@ -5,9 +5,13 @@ function Button.render(button)
 
   if properties.background then
     love.graphics.setColor(unpack(properties.background))
+    love.graphics.rectangle('fill', button.x, button.y, button.width, button.height)
   end
 
-  love.graphics.rectangle('fill', button.x, button.y, button.width, button.height)
+  if properties.image then
+    local w,h = properties.image:getDimensions()
+    love.graphics.draw(properties.image, button.x + (button.width - w)/2, button.y + (button.height - h)/2)
+  end
 
   if properties.color then
     love.graphics.setColor(unpack(properties.color))

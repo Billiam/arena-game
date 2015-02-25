@@ -33,7 +33,7 @@ function Title.resize()
   --retain current hover state during rebuild
   local oldState = scene
 
-  TitleMenu.initGui()
+  Title.initGui()
 
   -- set the hover element to the old hover element
   scene:setHoverIndex(oldState:hoverIndex())

@@ -18,5 +18,11 @@ return {
   },
   ["button.overlay:hover"] = {
     background = { 255, 255, 255, 0 }
+  },
+  ["button.previous"] = {
+    image = Resource.image['ui/left']
+  },
+  ["button.next"] = {
+    image = Resource.image['ui/right']
   }
 }

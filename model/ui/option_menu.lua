@@ -26,7 +26,7 @@ function OptionMenu.init(x, y, width, scene)
     gui:button({
       index = false,
       width = 30,
-      text = '<',
+      style = 'previous',
     }):on('focus', function()
       Translate:previousLanguage()
     end)
@@ -46,7 +46,7 @@ function OptionMenu.init(x, y, width, scene)
     gui:button({
       index = false,
       width = 30,
-      text = '>',
+      style = 'next',
     }):on('focus', function()
       Translate:nextLanguage()
     end)
@@ -97,7 +97,7 @@ function OptionMenu.init(x, y, width, scene)
     gui:button({
       index = false,
       width = 30,
-      text = '<',
+      style = 'previous',
     }):on('focus', function()
       Display.previousMode()
     end)
@@ -117,12 +117,11 @@ function OptionMenu.init(x, y, width, scene)
     gui:button({
       index = false,
       width = 30,
-      text = '>',
+      style = 'next',
     }):on('focus', function()
       Display.nextMode()
     end)
   )
-
 
   -- Back
   scene:row(
