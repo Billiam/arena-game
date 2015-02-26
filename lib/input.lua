@@ -213,8 +213,11 @@ function Input.update()
     axes.left = Gamepad.parseLeft(gamepad)
     axes.right = Gamepad.parseRight(gamepad)
 
+    -- differs from deadzone
+    -- require at least this value in target direction (non circular deadzone)
+    local minOffset = 0.5
     --convert analog input to digital
-    if axes.left.x < 0 then
+    if axes.left.x < -minOffset then
       if not held.left then
         pressed.left = true
       end
@@ -228,7 +231,7 @@ function Input.update()
       held.left = false
     end
 
-    if axes.left.x > 0 then
+    if axes.left.x > minOffset then
       if not held.right then
         pressed.right = true
       end
@@ -241,7 +244,7 @@ function Input.update()
       held.right = false
     end
 
-    if axes.left.y < 0 then
+    if axes.left.y < -minOffset then
       if not held.up then
         pressed.up = true
       end
@@ -255,7 +258,7 @@ function Input.update()
       held.up = false
     end
 
-    if axes.left.y > 0 then
+    if axes.left.y > minOffset then
       if not held.down then
         pressed.down = true
       end

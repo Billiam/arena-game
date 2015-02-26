@@ -132,6 +132,18 @@ function Scene:activate()
   end
 end
 
+function Scene:selectionNext()
+  if self.hover then
+    self.hover:trigger('next')
+  end
+end
+
+function Scene:selectionPrevious()
+  if self.hover then
+    self.hover:trigger('previous')
+  end
+end
+
 function Scene:mouseMove(x,y)
   local element = self.inputCollection:first(x, y)
   if element then

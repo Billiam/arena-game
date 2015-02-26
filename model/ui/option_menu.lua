@@ -39,6 +39,10 @@ function OptionMenu.init(x, y, width, scene)
       text = function() return Translate:currentLanguage() end
     }):on('focus', function()
       Translate:nextLanguage()
+    end):on('next', function()
+      Translate:nextLanguage()
+    end):on('previous', function()
+      Translate:previousLanguage()
     end)
   )
 
@@ -110,6 +114,10 @@ function OptionMenu.init(x, y, width, scene)
       text = function() return Translate[Display.currentMode()] end
     }):on('focus', function()
       Display:nextMode()
+    end):on('next', function()
+      Display:nextMode()
+    end):on('previous', function()
+      Display:previousMode()
     end)
   )
 

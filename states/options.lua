@@ -1,7 +1,5 @@
-local Gamestate = require('vendor.h.gamestate')
 local State = require('lib.state')
 local Resource = require('resource')
---local menu = require('model.ui.option_menu')
 local OptionMenu = require('model.ui.option_menu')
 local Input = require('lib.input')
 local Controller = require('lib.controller')
@@ -20,7 +18,6 @@ end
 function Options.enter(current, previous)
   State.enter()
   Options.initGui()
---  menu:reset()
 end
 
 function Options.update(dt)
@@ -40,6 +37,14 @@ function Options.update(dt)
 
   if Controller.menuDown(1)then
     scene:next()
+  end
+
+  if Controller.menuRight(1) then
+    scene:selectionNext()
+  end
+
+  if Controller.menuLeft(1) then
+    scene:selectionPrevious()
   end
 
   if Controller.menuSelect() then
