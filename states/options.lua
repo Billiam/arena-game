@@ -12,7 +12,7 @@ Options = {
 setmetatable(Options, {__index = State})
 
 function Options.initGui()
-  scene = OptionMenu.init(love.graphics.getWidth()/2 - 230, love.graphics.getHeight()/2 - 200, 220, 240)
+  scene = OptionMenu.init(love.graphics.getWidth()/2 - 230, love.graphics.getHeight()/3, 220, 240)
 end
 
 function Options.enter(current, previous)
