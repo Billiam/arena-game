@@ -1,28 +1,42 @@
 local Resource = require('resource')
 
 return {
-  button = {
-    background = {200, 200, 200, 255},
-    color = {0, 0, 0, 255},
+  label = {
+    color = {0, 0, 0, 160}
   },
-  ["button:hover"] = {
-    background = {0, 0, 0, 255 },
-    color = { 255, 255, 255, 255},
-  },
-  ["button.menu"] = {
-    background = {143, 167, 136, 255},
+  [".menu"] = {
+    color = {255, 255, 255, 255},
     font = Resource.font.noto_black[20]
   },
-  ["button.overlay"] = {
+  [".menu:hover"] = {
+    background = {0, 0, 0, 255 },
+  },
+  [".overlay"] = {
+    color = { 255, 255, 255, 255},
     background = {255, 255, 255, 0},
   },
-  ["button.overlay:hover"] = {
-    background = { 255, 255, 255, 0 }
+  [".overlay:hover"] = {
+    background = { 0, 0, 0, 160 }
+  },
+  [".option"] = {
+    color = {0, 0, 0, 160}
+  },
+  [".option:hover"] = {
+    background = {0, 0, 0, 10},
+    color = {0, 0, 0, 255}
   },
   ["button.previous"] = {
+    image_opacity = 0.5,
     image = Resource.image['ui/left']
   },
+  ["button.previous:hover"] = {
+    image_opacity = 1
+  },
   ["button.next"] = {
+    image_opacity = 0.5,
     image = Resource.image['ui/right']
-  }
+  },
+  ["button.next:hover"] = {
+    image_opacity = 1
+  },
 }

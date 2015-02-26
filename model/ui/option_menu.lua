@@ -6,11 +6,11 @@ local gui = require('lib.gui.init')
 
 local OptionMenu = {}
 
-function OptionMenu.init(x, y, width, scene)
+function OptionMenu.init(x, y, labelWidth, inputWidth, scene)
   scene = scene or gui:scene()
 
-  local labelWidth = 240
-  local inputWidth = 220
+  labelWidth = labelWidth or 240
+  inputWidth = inputWidth or 220
 
   -- Language selection
   scene:add(
@@ -34,8 +34,8 @@ function OptionMenu.init(x, y, width, scene)
 
   scene:right(
     gui:button({
-      width = 100,
       width = inputWidth - 30 * 2,
+      style = 'option',
       text = function() return Translate:currentLanguage() end
     }):on('focus', function()
       Translate:nextLanguage()
@@ -67,6 +67,7 @@ function OptionMenu.init(x, y, width, scene)
 
   scene:right(
     gui:button({
+      style = 'option',
       width = inputWidth,
       text = '100% (not working)'
     })
@@ -83,6 +84,7 @@ function OptionMenu.init(x, y, width, scene)
 
   scene:right(
     gui:button({
+      style = 'option',
       width = inputWidth,
       text = '100% (not working)'
     })
@@ -109,7 +111,7 @@ function OptionMenu.init(x, y, width, scene)
 
   scene:right(
     gui:button({
-      width = 100,
+      style = 'option',
       width = inputWidth - 30 * 2,
       text = function() return Translate[Display.currentMode()] end
     }):on('focus', function()
@@ -134,6 +136,7 @@ function OptionMenu.init(x, y, width, scene)
   -- Back
   scene:row(
     gui:button({
+      style = 'option',
       y = 30,
       width = inputWidth + labelWidth,
       text = function() return Translate.BACK end

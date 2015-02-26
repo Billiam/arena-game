@@ -9,6 +9,7 @@ function Button.render(button)
   end
 
   if properties.image then
+    love.graphics.setColor({255, 255, 255, (properties.image_opacity or 1) * 255})
     local w,h = properties.image:getDimensions()
     love.graphics.draw(properties.image, button.x + (button.width - w)/2, button.y + (button.height - h)/2)
   end

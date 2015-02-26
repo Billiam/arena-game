@@ -12,12 +12,21 @@ Options = {
 setmetatable(Options, {__index = State})
 
 function Options.initGui()
-  scene = OptionMenu.init(love.graphics.getWidth()/2 - 100, love.graphics.getHeight()/2 - 100, 200)
+  scene = OptionMenu.init(love.graphics.getWidth()/2 - 230, love.graphics.getHeight()/2 - 200, 220, 240)
 end
 
 function Options.enter(current, previous)
   State.enter()
   Options.initGui()
+end
+
+function Options.resize(...)
+  local oldState = scene
+
+  Options.initGui()
+
+  -- set the hover element to the old hover element
+  scene:setHoverIndex(oldState:hoverIndex())
 end
 
 function Options.update(dt)

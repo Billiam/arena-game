@@ -35,7 +35,6 @@ function Combination.combine(arr, r)
 
     --combinations of (arr-1, r-1)
     for i, val in pairs(Combination.combine(arr_new, r-1)) do
-      print(val)
       local curr_result = {}
       table.insert(curr_result, arr[1]);
       for j,curr_val in pairs(val) do

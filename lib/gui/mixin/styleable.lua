@@ -15,6 +15,16 @@ function Styleable:getSelectors()
   return self.styleSelectors
 end
 
+function Styleable:clearStyleProperties()
+  local properties = self:getStyleProperties()
+
+  for key,val in pairs(properties) do
+    properties[key] = nil
+  end
+
+  return properties
+end
+
 function Styleable:getStyleProperties()
   self.styleProperties = self.styleProperties or {}
   return self.styleProperties
@@ -76,8 +86,8 @@ end
 function Styleable:applyStyles()
   local stylesheet = gui.getStylesheet()
   
-  local properties = self:getStyleProperties()
-
+  local properties = self:clearStyleProperties()
+table_print(properties)
   local styleNames = styleCombinations(self.type, self:getStyles(), self:getSelectors())
 
   for i,name in ipairs(styleNames) do
