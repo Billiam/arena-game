@@ -22,7 +22,7 @@ function Player.create(position, input, firing, health)
     angle = 0,
     gun = Gun.none(),
 
-    speed = 85,
+    speed = 165,
 
     isFiring = false,
     isAlive = true,

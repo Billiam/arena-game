@@ -1,6 +1,5 @@
 return {  
-  speed = 100,
-  repeatRate = 0.1,
+  speed = 1000,
+  repeatRate = 0.11,
   accuracy = 0.9,
-  speed = 1200
 }

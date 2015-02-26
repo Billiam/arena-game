@@ -10,7 +10,7 @@ local Person = {
   height = 26,
   width = 14,
   
-  speed = 20,
+  speed = 40,
   isAlive = true,
   
   panic = 0.1

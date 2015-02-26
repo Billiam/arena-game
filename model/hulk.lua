@@ -9,7 +9,7 @@ local Hulk = {
   colliderType = 'hulk',
   height = 28,
   width = 26,
-  speed = 35,
+  speed = 65,
   isAlive = true
 }
 

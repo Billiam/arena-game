@@ -9,8 +9,8 @@ local Grunt = {
   height = 24,
   width = 18,
   isAlive = true,
-  distance = 8,
-  minimumStep = 0.06,
+  distance = 12,
+  minimumStep = 0.035,
 }
 
 Grunt.__index = Grunt
@@ -20,7 +20,7 @@ function Grunt.create(position)
   local instance = {
     position = position:clone(),
     angle = love.math.random() * math.pi * 2,
-    nextStep = love.math.random() + 0.2,
+    nextStep = love.math.random() * 0.4 + 0.2,
     accumulator = 0,
     patience = 1
   }
@@ -36,7 +36,7 @@ function Grunt:update(dt, player)
   if self.accumulator >= self.nextStep then
     self.patience = math.max(0, 1 - self.accumulator/30)
 
-    self.nextStep = self.accumulator + self.minimumStep + self.patience * 0.4
+    self.nextStep = self.accumulator + self.minimumStep + self.patience * 0.2
     
     self:step(dt, player)
   end
