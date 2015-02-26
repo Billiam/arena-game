@@ -46,7 +46,7 @@ function Combination.combine(arr, r)
 
     --combinations of (arr-1, r)
     for i, val in pairs(Combination.combine(arr_new, r)) do
---      table.insert(return_table, val)
+      table.insert(return_table, val)
     end
 
     return return_table
