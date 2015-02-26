@@ -2,7 +2,7 @@ local Translate = require('lib.translate')
 local Resource = require('resource')
 local Leaderboard = {}
 
-function Leaderboard.render(scores)
+function Leaderboard.render(scores, guiScene)
   Resource.view.background.render(love.graphics.getWidth(), love.graphics.getHeight())
   
   love.graphics.push()
@@ -17,9 +17,7 @@ function Leaderboard.render(scores)
   end
 
   love.graphics.pop()
-
-  love.graphics.printf(Translate.BACK, 0, love.graphics.getHeight() - 100, love.graphics.getWidth(), 'center')
-  love.graphics.setColor(255, 255, 255, 255)
+  guiScene:render()
 end
 
 return Leaderboard

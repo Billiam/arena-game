@@ -21,16 +21,22 @@ function Display.currentMode()
   end
 end
 
-function Display.nextMode()
+function Display.offsetMode(offset)
+  offset = offset or 1
+
   local current = Display.currentMode()
 
   local currentPosition = screenModes:find_index(function(i) return i == current end)
-  local nextPosition = currentPosition % screenModes:count() + 1
-  local newMode = screenModes[nextPosition]
-  
-  Display.setFullscreen(newMode)
-  
-  return newMode
+  local offsetPosition = (currentPosition - 1 + offset) % screenModes:count() + 1
+  return screenModes[offsetPosition]
+end
+
+function Display.previousMode()
+  Display.setFullscreen(Display.offsetMode(-1))
+end
+
+function Display.nextMode()
+  Display.setFullscreen(Display.offsetMode(1))
 end
 
 function Display.setFullscreen(status)

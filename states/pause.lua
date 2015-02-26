@@ -1,15 +1,18 @@
 local Gamestate = require('vendor.h.gamestate')
 local State = require('lib.state')
 local Resource = require('resource')
+
 local Input = require('lib.input')
 local Controller = require('lib.controller')
-local menu = require('model.ui.pause_menu')
+
+local PauseMenu = require('model.ui.pause_menu')
 
 Pause = {
   name = 'pause'
 }
 setmetatable(Pause, {__index = State})
 
+local scene
 local canvas = nil
 local previousState = nil
 
@@ -29,27 +32,39 @@ function Pause.init()
   blurv:send('steps', 12)
 end
 
+function Pause.initGui()
+  scene = PauseMenu.init(love.graphics.getWidth()/2 - 100, love.graphics.getHeight()/2 - 100, 200)
+end
+
 function Pause.enter(current, previous)
   State.enter()
-  menu:reset()
   canvas = nil
-  
+
+  Pause.initGui()
   previousState = previous
 end
 
 function Pause.update(dt)
-  menu:update(dt)
+  local movePos = Input.mouse.moved()
+  if movePos.x or movePos.y then
+    scene:mouseMove(movePos.x, movePos.y)
+  end
+
+  if Input.mouse.wasPressed() then
+    local pos = Input.mouse.position()
+    scene:mouseDown(pos.x, pos.y)
+  end
 
   if Controller.menuUp(1) then
-    menu:keypressed('up')
+    scene:previous()
   end
 
   if Controller.menuDown(1)then
-    menu:keypressed('down')
+    scene:next()
   end
 
-  if Controller.menuSelect(1) then
-    menu:keypressed('return')
+  if Controller.menuSelect() then
+    scene:activate()
   end
 
   if Controller.unpause() then
@@ -60,7 +75,16 @@ end
 function Pause.resize(...)
   if previousState then
     previousState.resize(...)
+    canvas = nil
   end
+
+  --retain current hover state during rebuild
+  local oldState = scene
+
+  Pause.initGui()
+
+  -- set the hover element to the old hover element
+  scene:setHoverIndex(oldState:hoverIndex())
 end
 
 function Pause.drawBelow()
@@ -95,19 +119,12 @@ function Pause.blur(input, cache)
   love.graphics.draw(cache)
 end
 
-function Pause.resize(...)
-  if previousState then
-    previousState.resize(...)
-    canvas = nil
-  end
-end
-
 function Pause.draw()
   if previousState then
     Pause.drawBelow()
   end
   
-  Resource.view.pause.render(menu)
+  Resource.view.pause.render(scene)
 end
 
 return Pause
