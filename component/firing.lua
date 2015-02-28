@@ -6,7 +6,8 @@ Firing.__index = Firing
 
 function Firing.create(bulletList) 
   local instance = {
-    bulletList = bulletList
+    bulletList = bulletList,
+    accumulator = 0
   }
   setmetatable(instance, Firing)
   
@@ -14,11 +15,14 @@ function Firing.create(bulletList)
 end
 
 function Firing:update(player, dt)
+  self.accumulator = self.accumulator + dt
+
   if not player.isFiring then
     return
   end
   
-  local bullets = player:fire(dt)
+  local bullets = player:fire(self.accumulator)
+  self.accumulator = 0
 
   if bullets and self.bulletList then
     local kick = Vector(0,0)
