@@ -1,5 +1,5 @@
 local Throttle = require('lib.throttle')
-local Bullet = require('model.bullet')
+local Bullet = require('model.factory.bullet')
 local Auto = require('model.gun.auto')
 
 local Gun = {}
@@ -36,7 +36,8 @@ end
 
 function Gun:createShot(player)
   local angle = player.angle + math.pi * 0.5 * (love.math.random() - 0.5) * (1 - self.properties.accuracy)
-  return { Bullet.create(player:gunPosition(), angle, self.properties.speed) }
+
+  return { Bullet(player:gunPosition(), angle, self.properties.speed) }
 end
 
 function Gun:fire(dt, ...)
