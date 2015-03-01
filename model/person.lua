@@ -13,7 +13,8 @@ local Person = {
   speed = 40,
   isAlive = true,
   
-  panic = 0.1
+  panic = 0.1,
+  components = {}
 }
 
 Person.__index = Person
@@ -21,13 +22,27 @@ Collidable:mixInto(Person)
 
 function Person.create(position)
   local instance = {
-    position = position:clone(),
+    position = Vector.new(0, 0),
     angle = Geometry.randomAngle(),
   }
   
   setmetatable(instance, Person)
   
   return instance
+end
+
+function Person:add(component)
+  self.components[component.type] = component
+
+  return self
+end
+
+function Person:render()
+  for type,component in pairs(self.components) do
+    if component.render then
+      component:render(self)
+    end
+  end
 end
 
 function Person:updatePanic(dt)

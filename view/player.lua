@@ -1,8 +1,18 @@
 local Geometry = require('lib.geometry')
 local Resource = require('resource')
-local Player = {}
 
-function Player.render(player)
+local Player = {
+  type = 'player_view'
+}
+Player.mt = {__index = Player }
+
+function Player.create()
+  local instance = {}
+  setmetatable(instance, Player.mt)
+  return instance
+end
+
+function Player:render(player)
   local gunPosition = player:gunPosition()
   
   local img = Resource.image['player/firing']

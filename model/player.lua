@@ -72,7 +72,17 @@ end
 
 function Player:update(dt)
   for name,component in pairs(self.components) do
-    component:update(self, dt)
+    if component.update then
+      component:update(self, dt)
+    end
+  end
+end
+
+function Player:render()
+  for type,component in pairs(self.components) do
+    if component.render then
+      component:render(self)
+    end
   end
 end
 

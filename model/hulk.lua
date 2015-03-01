@@ -40,12 +40,6 @@ function Hulk.create(position, world)
   return instance
 end
 
-function Hulk:setPosition(position)
-  self.position = position
-
-  return self
-end
-
 function Hulk:add(component)
   self.components[component.type] = component
 

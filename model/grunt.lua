@@ -50,12 +50,6 @@ function Grunt:update(dt, player)
   end
 end
 
-function Grunt:setPosition(position)
-  self.position = position
-
-  return self
-end
-
 function Grunt:step(dt, player)
   local newPosition = self.position + (player.position - self.position):normalize_inplace() * self.distance
   self.angle = Geometry.lineAngle(self.position, newPosition)

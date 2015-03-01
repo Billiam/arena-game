@@ -25,10 +25,6 @@ function Barrier.create(position)
   return instance
 end
 
-function Barrier:setPosition(position)
-  self.position = position
-end
-
 function Barrier:add(component)
   self.components[component.type] = component
 
