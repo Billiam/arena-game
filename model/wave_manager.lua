@@ -4,7 +4,7 @@ local Vector = require('vendor.h.vector')
 local Grunt = require('model.factory.grunt')
 local Barrier = require('model.factory.barrier')
 local Person = require('model.person')
-local Hulk = require('model.hulk')
+local Hulk = require('model.factory.hulk')
 
 local WaveManager = {
   current = 1,
@@ -83,7 +83,7 @@ function WaveManager:addWorldEntities(type, klass)
 
 
     local entity
-    if klass == Grunt or klass == Barrier then
+    if klass == Grunt or klass == Barrier or klass == Hulk then
       entity = klass(position, self.worldEntities)
       local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
       entity:setPosition(position)

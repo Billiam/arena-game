@@ -72,7 +72,7 @@ function Game.draw()
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
     -- TODO: migrate all entities into renderable
-    if entity.type == 'grunt' or entity.type == 'barrier' then
+    if entity.type == 'grunt' or entity.type == 'barrier' or entity.type == 'hulk' then
       entity:render()
     else
       Resource.view[entity.type].render(entity)
