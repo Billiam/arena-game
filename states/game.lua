@@ -71,7 +71,11 @@ function Game.draw()
   Resource.view.bullet.render(bullets.list)
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
-    Resource.view[entity.type].render(entity)
+    if entity.type == 'grunt' then
+      entity:render()
+    else
+      Resource.view[entity.type].render(entity)
+    end
   end
 
   Resource.view.wall.render(arena)
@@ -107,8 +111,9 @@ function Game.setup()
   local firing = Firing.create(bullets)
   local health = Health.create()
   
-  player = Player.create(Vector(100, 100), input, firing, health)
+  player = Player.create(Vector(100, 100), health)
   player:setGun(Gun.auto())
+  player:add(input):add(firing)
 
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
   

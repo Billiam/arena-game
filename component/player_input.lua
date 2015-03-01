@@ -1,5 +1,8 @@
 local Controller = require('lib.controller')
-local PlayerInput = {}
+local PlayerInput = {
+  type = 'player_input'
+}
+
 PlayerInput.__index = PlayerInput
   
 function PlayerInput.create(index)

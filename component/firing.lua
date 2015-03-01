@@ -1,7 +1,9 @@
 local Vector = require('vendor.h.vector')
 local beholder = require('vendor.beholder')
 
-local Firing = {}
+local Firing = {
+  type = 'firing'
+}
 Firing.__index = Firing
 
 function Firing.create(bulletList) 

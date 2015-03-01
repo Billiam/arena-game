@@ -16,7 +16,7 @@ Collidable:mixInto(Player)
 
 local gunDistance = 20
 
-function Player.create(position, input, firing, health)
+function Player.create(position, health)
   local instance = {
     position = position:clone(),
     angle = 0,
@@ -26,14 +26,25 @@ function Player.create(position, input, firing, health)
 
     isFiring = false,
     isAlive = true,
-    
-    input = input,
-    firing = firing,
-    health = health
+
+    health = health,
+    components = {}
   }
   
   local self = setmetatable(instance, Player)
   
+  return self
+end
+
+function Player:add(component)
+  self.components[component.type] = component
+
+  return self
+end
+
+function Player:remove(type)
+  self.components[type] = nil
+
   return self
 end
 
@@ -60,8 +71,9 @@ function Player:fire(dt)
 end
 
 function Player:update(dt)
-  self.input:update(self, dt)
-  self.firing:update(self, dt)
+  for name,component in pairs(self.components) do
+    component:update(self, dt)
+  end
 end
 
 function Player:gunPosition()
