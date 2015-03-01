@@ -71,7 +71,8 @@ function Game.draw()
   Resource.view.bullet.render(bullets.list)
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
-    if entity.type == 'grunt' then
+    -- TODO: migrate all entities into renderable
+    if entity.type == 'grunt' or entity.type == 'barrier' then
       entity:render()
     else
       Resource.view[entity.type].render(entity)
