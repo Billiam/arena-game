@@ -26,17 +26,24 @@ end
 
 function Hulk.create(position, world)
   local instance = {
-    position = position:clone(),
+    position = Vector.new(0, 0),
     timer = Timer.create(attentiveness()),
     world = world,
 
     angle = randomAngle(),
     target = nil,
+    components = {},
   }
 
   setmetatable(instance, Hulk)
 
   return instance
+end
+
+function Hulk:add(component)
+  self.components[component.type] = component
+
+  return self
 end
 
 function Hulk:update(dt, player)
@@ -85,6 +92,14 @@ end
 function Hulk:reset(player)
   self:newPosition(player)
   self.timer:reset(attentiveness())
+end
+
+function Hulk:render()
+  for type,component in pairs(self.components) do
+    if component.render then
+      component:render(self)
+    end
+  end
 end
 
 function Hulk.collide(hulk, other)

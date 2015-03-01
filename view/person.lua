@@ -1,6 +1,15 @@
-local Person = {}
+local Person = {
+  type = 'person_view'
+}
+Person.mt = {__index = Person }
 
-function Person.render(person)
+function Person.create()
+  local instance = {}
+  setmetatable(instance, Person.mt)
+  return instance
+end
+
+function Person:render(person)
   love.graphics.push()
   love.graphics.translate(person.position.x + person.width / 2, person.position.y + person.height / 2)
   love.graphics.setColor(255, 255, 255, 255)

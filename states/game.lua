@@ -1,4 +1,3 @@
-local Input = require('lib.input')
 local Gamestate = require('vendor.h.gamestate')
 local State = require('lib.state')
 local Resource = require('resource')
@@ -10,17 +9,12 @@ local Vector =  require('vendor.h.vector')
 local Bump = require('vendor.bump')
 local beholder = require('vendor.beholder')
 
-local Firing = require('component.firing')
-local PlayerInput = require('component.player_input')
-local Health = require('component.health')
-
 -- models
 local Collection = require('model.collection')
 local WaveCollection = require('model.wave_collection')
 local Arena = require('model.arena')
-local Player = require('model.player')
+local Player = require('model.factory.player')
 local CollisionResolver = require('model.collision_resolver')
-local Gun = require('model.gun')
 local WaveManager = require('model.wave_manager')
 local Scorekeeper = require('model.scorekeeper')
 
@@ -71,7 +65,7 @@ function Game.draw()
   Resource.view.bullet.render(bullets.list)
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
-    Resource.view[entity.type].render(entity)
+    entity:render()
   end
 
   Resource.view.wall.render(arena)
@@ -103,12 +97,7 @@ function Game.setup()
 
   arena = Arena.create(App.width, App.height, 15, collider)
 
-  local input = PlayerInput.create(1)
-  local firing = Firing.create(bullets)
-  local health = Health.create()
-  
-  player = Player.create(Vector(100, 100), input, firing, health)
-  player:setGun(Gun.auto())
+  player = Player(Vector(100, 100), bullets, 1)
 
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
   

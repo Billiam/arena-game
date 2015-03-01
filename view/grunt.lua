@@ -1,9 +1,18 @@
 local Resource = require('resource')
 local Geometry = require('lib.geometry')
 
-local Grunt = {}
+local Grunt = {
+  type = 'grunt_view'
+}
+Grunt.mt = {__index = Grunt }
 
-function Grunt.render(grunt)
+function Grunt.create()
+  local instance = {}
+  setmetatable(instance, Grunt.mt)
+  return instance
+end
+
+function Grunt:render(grunt)
   local img = Resource.image['grunt/stand']
 
   local offset = img:getWidth() - 3
