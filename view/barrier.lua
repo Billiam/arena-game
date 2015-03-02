@@ -10,8 +10,13 @@ function Barrier.create()
 end
 
 function Barrier:render(barrier)
-  love.graphics.setColor(255, 255, 0, 255)
+  if barrier.isAlive then
+    love.graphics.setColor(255, 255, 0, 255)
+  else
+    love.graphics.setColor(255, 255, 0, 50)
+  end
   love.graphics.rectangle("fill", barrier.position.x, barrier.position.y, barrier.width, barrier.height)
+
   love.graphics.setColor(255,255,255,255)
 end
 

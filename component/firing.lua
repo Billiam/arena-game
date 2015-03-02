@@ -1,5 +1,4 @@
 local Vector = require('vendor.h.vector')
-local beholder = require('vendor.beholder')
 
 local Firing = {
   type = 'firing'

@@ -13,7 +13,7 @@ function Grunt.create()
 end
 
 function Grunt:render(grunt)
-  local img = Resource.image['grunt/stand']
+  local img = grunt.isAlive and Resource.image['grunt/stand'] or Resource.image['grunt/hit']
 
   local offset = img:getWidth() - 3
   local width = -1

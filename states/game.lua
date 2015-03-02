@@ -62,7 +62,14 @@ function Game.draw()
   camera:attach()
 
   Resource.view.background.render()
-  Resource.view.bullet.render(bullets.list)
+
+  for i,entity in ipairs(bullets.list) do
+    entity:render()
+  end
+
+  for i,entity in ipairs(deadThings) do
+    entity:render()
+  end
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
     entity:render()
