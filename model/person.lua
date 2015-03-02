@@ -1,3 +1,4 @@
+local Composable = require('model.mixin.composable')
 local Collidable = require('model.mixin.collidable')
 local beholder = require('vendor.beholder')
 local Vector = require('vendor.h.vector')
@@ -14,10 +15,11 @@ local Person = {
   isAlive = true,
   
   panic = 0.1,
-  components = {}
 }
 
 Person.__index = Person
+
+Composable:mixInto(Person)
 Collidable:mixInto(Person)
 
 function Person.create(position)
@@ -31,18 +33,8 @@ function Person.create(position)
   return instance
 end
 
-function Person:add(component)
-  self.components[component.type] = component
-
-  return self
-end
-
 function Person:render()
-  for type,component in pairs(self.components) do
-    if component.render then
-      component:render(self)
-    end
-  end
+  self:renderComponents(self)
 end
 
 function Person:updatePanic(dt)

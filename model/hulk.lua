@@ -1,4 +1,6 @@
 local Timer = require('lib.timer')
+
+local Composable = require('model.mixin.composable')
 local Collidable = require('model.mixin.collidable')
 local Vector = require('vendor.h.vector')
 local Geometry = require('lib.geometry')
@@ -14,6 +16,8 @@ local Hulk = {
 }
 
 Hulk.__index = Hulk
+
+Composable:mixInto(Hulk)
 Collidable:mixInto(Hulk)
 
 local function randomAngle()
@@ -27,23 +31,16 @@ end
 function Hulk.create(position, world)
   local instance = {
     position = Vector.new(0, 0),
-    timer = Timer.create(attentiveness()),
+    timer = Timer.create(attentiveness() * love.math.random()),
     world = world,
 
     angle = randomAngle(),
     target = nil,
-    components = {},
   }
 
   setmetatable(instance, Hulk)
 
   return instance
-end
-
-function Hulk:add(component)
-  self.components[component.type] = component
-
-  return self
 end
 
 function Hulk:update(dt, player)
@@ -54,6 +51,8 @@ function Hulk:update(dt, player)
   end
 
   self:move(self.position + Vector.fromAngle(self.angle, self.speed) * dt)
+
+  self:updateComponents(self, dt, player)
 end
 
 function Hulk:closeToTarget()
@@ -95,11 +94,7 @@ function Hulk:reset(player)
 end
 
 function Hulk:render()
-  for type,component in pairs(self.components) do
-    if component.render then
-      component:render(self)
-    end
-  end
+  self:renderComponents(self)
 end
 
 function Hulk.collide(hulk, other)

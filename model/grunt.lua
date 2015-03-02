@@ -1,4 +1,6 @@
 local beholder = require('vendor.beholder')
+
+local Composable = require('model.mixin.composable')
 local Collidable = require('model.mixin.collidable')
 local Geometry = require('lib.geometry')
 local Vector = require('vendor.h.vector')
@@ -14,7 +16,9 @@ local Grunt = {
   minimumStep = 0.035,
 }
 
-Grunt.__index = Grunt
+Grunt.mt = { __index = Grunt }
+
+Composable:mixInto(Grunt)
 Collidable:mixInto(Grunt)
 
 function Grunt.create()
@@ -24,21 +28,15 @@ function Grunt.create()
     nextStep = love.math.random() * 0.4 + 0.2,
     accumulator = 0,
     patience = 1,
-    components = {},
   }
   
-  local self = setmetatable(instance, Grunt)
+  setmetatable(instance, Grunt.mt)
   
-  return self
+  return instance
 end
 
 function Grunt:update(dt, player)
-  for type,component in pairs(self.components) do
-    if component.update then
-      component:update(self, dt, player)
-    end
-  end
-
+  self:updateComponents(self, dt, player)
   self.accumulator = self.accumulator + dt
   
   if self.accumulator >= self.nextStep then
@@ -50,16 +48,14 @@ function Grunt:update(dt, player)
   end
 end
 
+function Grunt:render()
+  self:renderComponents(self)
+end
+
 function Grunt:step(dt, player)
   local newPosition = self.position + (player.position - self.position):normalize_inplace() * self.distance
   self.angle = Geometry.lineAngle(self.position, newPosition)
   self:move(newPosition)
-end
-
-function Grunt:add(component)
-  self.components[component.type] = component
-
-  return self
 end
 
 function Grunt:reset()
@@ -79,14 +75,6 @@ end
 function Grunt:kill()
   self.isAlive = false
   beholder.trigger('KILL', self)
-end
-
-function Grunt:render()
-  for type,component in pairs(self.components) do
-    if component.render then
-      component:render(self)
-    end
-  end
 end
 
 return Grunt
