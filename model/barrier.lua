@@ -1,5 +1,7 @@
 local Collidable = require('model.mixin.collidable')
+local Composable = require('model.mixin.composable')
 local Vector = require('vendor.h.vector')
+local beholder = require('vendor.beholder')
 
 local Barrier = {
   isBarrier = true,
@@ -12,12 +14,12 @@ local Barrier = {
 
 Barrier.__index = Barrier
 
+Composable:mixInto(Barrier)
 Collidable:mixInto(Barrier)
 
 function Barrier.create(position)
   local instance = {
     position = Vector.new(0, 0),
-    components = {}
   }
   
   setmetatable(instance, Barrier)
@@ -25,20 +27,14 @@ function Barrier.create(position)
   return instance
 end
 
-function Barrier:add(component)
-  self.components[component.type] = component
-
-  return self
+function Barrier:kill()
+  self.isAlive = false
+  beholder.trigger('KILL', self)
 end
 
 function Barrier:render()
-  for type,component in pairs(self.components) do
-    if component.render then
-      component:render(self)
-    end
-  end
+  self:renderComponents(self)
 end
-
 
 function Barrier:update() end
 function Barrier:reset() end

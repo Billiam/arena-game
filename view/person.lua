@@ -15,14 +15,8 @@ function Person:render(person)
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle('fill', -person.width/2, -person.height/2, person.width, person.height)
 
-  love.graphics.rotate(person.angle + math.pi/2)
   love.graphics.setColor(0, 0, 255, 255)
-  love.graphics.polygon(
-    'fill',
-    0, -person.height/2,
-    -person.width/2, person.height/2,
-    person.width/2, person.height/2
-  )
+  love.graphics.line(0, 0, math.cos(person.angle) * 15, math.sin(person.angle) * 15)
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.pop()
 end

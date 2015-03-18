@@ -1,6 +1,6 @@
 return function(barrier, grunt)
   if barrier.isAlive and grunt.isAlive then
-    barrier.isAlive = false
+    barrier:kill()
     grunt:kill()
   end
 end

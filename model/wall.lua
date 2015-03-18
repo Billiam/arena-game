@@ -1,9 +1,13 @@
+local Collidable = require('model.mixin.collidable')
+
 local Wall = {
   isWall = true,
-  colliderType = 'wall' 
+  colliderType = 'wall',
 }
 
 Wall.__index = Wall
+
+Collidable:mixInto(Wall)
 
 function Wall.create(position, width, height)
   local instance = {

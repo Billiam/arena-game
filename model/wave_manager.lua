@@ -60,18 +60,24 @@ end
 
 function WaveManager:restartRound()
   self:centerPlayer()
-  
-  for i, entity in ipairs(self.worldEntities.list) do
-    local distance = safeDistance[entity.type]
 
+  -- Remove decorative entities (death actors)
+  self.worldEntities:removeTransient()
+
+  for i, entity in ipairs(self.worldEntities.list) do
     entity:reset(self.player)
 
+    local distance = safeDistance[entity.type]
     local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
+
     entity:place(position)
   end
-  
+
+  -- Move all entities to trigger collisions in new locations
   for i, entity in ipairs(self.worldEntities.list) do
-    entity:move(entity.position)
+    if entity.isCollidable then
+      entity:move(entity.position)
+    end
   end
   
   self.player:reset()

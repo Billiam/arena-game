@@ -1,8 +1,8 @@
 local Vector = require('vendor.h.vector')
 local Gun = require('model.gun')
+local Composable = require('model.mixin.composable')
 local Collidable = require('model.mixin.collidable')
 
-local beholder = require('vendor.beholder')
 local Player = {
   isPlayer = true,
   type = 'player',
@@ -12,9 +12,11 @@ local Player = {
 }
 
 Player.__index = Player
+
+Composable:mixInto(Player)
 Collidable:mixInto(Player)
 
-local gunDistance = 20
+local gunDistance = 10
 
 function Player.create(position, health)
   local instance = {
@@ -33,18 +35,6 @@ function Player.create(position, health)
   
   local self = setmetatable(instance, Player)
   
-  return self
-end
-
-function Player:add(component)
-  self.components[component.type] = component
-
-  return self
-end
-
-function Player:remove(type)
-  self.components[type] = nil
-
   return self
 end
 
@@ -71,19 +61,11 @@ function Player:fire(dt)
 end
 
 function Player:update(dt)
-  for name,component in pairs(self.components) do
-    if component.update then
-      component:update(self, dt)
-    end
-  end
+  self:updateComponents(self, dt)
 end
 
 function Player:render()
-  for type,component in pairs(self.components) do
-    if component.render then
-      component:render(self)
-    end
-  end
+  self:renderComponents(self)
 end
 
 function Player:gunPosition()

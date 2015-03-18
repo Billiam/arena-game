@@ -40,6 +40,10 @@ function Game.update(...)
   oldGameUpdate(...)
 end
 
+function table_dump(...)
+  return inspect(...)
+end
+
 function table_print(...)
-  print(inspect(...))
+  print(table_dump(...))
 end

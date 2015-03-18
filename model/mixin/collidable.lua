@@ -1,7 +1,10 @@
 local beholder = require('vendor.beholder')
 local Mixin = require('lib.mixin')
 
-local Collidable = {}
+local Collidable = {
+  isCollidable = true
+}
+
 setmetatable(Collidable, {__index = Mixin})
 
 function Collidable:move(position)

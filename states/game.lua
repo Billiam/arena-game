@@ -14,6 +14,8 @@ local Collection = require('model.collection')
 local WaveCollection = require('model.wave_collection')
 local Arena = require('model.arena')
 local Player = require('model.factory.player')
+local DeathFactory = require('model.factory.death')
+
 local CollisionResolver = require('model.collision_resolver')
 local WaveManager = require('model.wave_manager')
 local Scorekeeper = require('model.scorekeeper')
@@ -21,16 +23,15 @@ local Scorekeeper = require('model.scorekeeper')
 -- data
 local ScoreTable = require('data.score')
 
-local camera = nil
-local waves = nil
-local scorekeeper = nil
-local player = nil
-local collisionResolver = nil
-local bullets = nil
-local worldEntities = nil
-local arena = nil
+local camera 
+local waves 
+local scorekeeper 
+local player 
+local collisionResolver 
+local worldEntities
+local arena 
+local deathManager 
 
-local deadThings = {}
 local eventListeners = {}
 
 local Game = {
@@ -53,7 +54,7 @@ function Game.update(dt)
   Game.updateInput(dt)
   Game.updatePlayer(dt)
   Game.updateEntities(dt)
-  Game.updateBullets(dt)
+--  Game.updateBullets(dt)
   Game.updateDead(dt)
   Game.updateWave(dt)
 end
@@ -62,7 +63,6 @@ function Game.draw()
   camera:attach()
 
   Resource.view.background.render()
-  Resource.view.bullet.render(bullets.list)
 
   for i,entity in ipairs(worldEntities:zSorted(player)) do
     entity:render()
@@ -92,12 +92,11 @@ function Game.setup()
 
   local collider = Bump.newWorld()
   
-  bullets = Collection.create(collider)
   worldEntities = WaveCollection.create(collider)
 
   arena = Arena.create(App.width, App.height, 15, collider)
 
-  player = Player(Vector(100, 100), bullets, 1)
+  player = Player(Vector(100, 100), worldEntities, 1)
 
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
   
@@ -142,22 +141,11 @@ function Game.updateEntities(dt)
 end
 
 local function removeDead(collection)
-  local dead = collection:removeDead()
-  
-  for i,n in ipairs(dead) do
-    table.insert(deadThings, n)
-  end
+  collection:removeDead()
 end
 
 function Game.updateDead(dt)
   removeDead(worldEntities)
-  removeDead(bullets)
-end
-
-function Game.updateBullets(dt)
-  for i,bullet in ipairs(bullets.list) do
-    bullet:update(dt)
-  end
 end
 
 function Game.updatePlayer(dt)
@@ -171,6 +159,11 @@ end
 
 function Game.kill(entity)
   scorekeeper:add(entity.type)
+
+  local spawnedElements = DeathFactory(entity)
+  for i,v in ipairs(spawnedElements) do
+    worldEntities:add(v)
+  end
 end
 
 function Game.rescue(person)

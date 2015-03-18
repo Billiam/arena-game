@@ -13,17 +13,31 @@ function Collection.create(collider)
   return instance
 end
 
-function Collection:removeDead()
-  local dead = {}
-  
+function Collection:removeBy(callback)
+  local collection = {}
+
   for i=#self.list, 1, -1 do
-    if not self.list[i].isAlive then
-      table.insert(dead, self.list[i])
+    if callback(self.list[i]) then
+      table.insert(collection, self.list[i])
       self:removeElement(self.list[i])
     end
   end
-  
-  return dead
+
+  return collection
+end
+
+function Collection:removeDead()
+  return self:removeBy(function(entity)
+    return entity.isAlive == false
+  end)
+end
+
+function Collection.isTransientEntity(entity)
+  return entity.type == 'death' or entity.type == 'bullet'
+end
+
+function Collection:removeTransient()
+  return self:removeBy(self.isTransientEntity)
 end
 
 function Collection:zSorted(additional)
@@ -56,7 +70,10 @@ function Collection:add(element)
     
     table.insert(self.partitionedList[element.type], element)
   end
-  self.collider:add(element, element.position.x, element.position.y, element.width, element.height)
+
+  if element.isCollidable then
+    self.collider:add(element, element.position.x, element.position.y, element.width, element.height)
+  end
 end
 
 function Collection:remove(index)
@@ -65,10 +82,13 @@ end
 
 function Collection:removeElement(element, index)
   table.remove(self.list, index or self:findIndex(element))
-  self.collider:remove(element)
-   
+
   if element.type then
     table.remove(self.partitionedList[element.type], self:findIndex(element, self.partitionedList[element.type]))
+  end
+
+  if element.isCollidable then
+    self.collider:remove(element)
   end
 end
 
