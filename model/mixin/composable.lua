@@ -12,7 +12,7 @@ function Composable:add(component)
   self:getComponents()[component.type] = component
 
   if component.init then
-    component.init(self)
+    component:init(self)
   end
 
   return self

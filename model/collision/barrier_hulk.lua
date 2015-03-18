@@ -1,3 +1,3 @@
 return function(barrier, hulk)
-  barrier.isAlive = false
+  barrier:kill()
 end

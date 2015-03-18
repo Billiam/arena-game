@@ -1,6 +1,7 @@
 local Collidable = require('model.mixin.collidable')
 local Composable = require('model.mixin.composable')
 local Vector = require('vendor.h.vector')
+local beholder = require('vendor.beholder')
 
 local Barrier = {
   isBarrier = true,
@@ -24,6 +25,11 @@ function Barrier.create(position)
   setmetatable(instance, Barrier)
   
   return instance
+end
+
+function Barrier:kill()
+  self.isAlive = false
+  beholder.trigger('KILL', self)
 end
 
 function Barrier:render()

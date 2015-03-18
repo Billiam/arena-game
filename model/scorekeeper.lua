@@ -31,6 +31,10 @@ end
 function Scorekeeper:add(entityType)
   local entityScore = self.scoreTable[entityType]
 
+  if not entityScore then
+    return
+  end
+
   if type(entityScore) == 'number' then
     self.score = self.score + entityScore
     return

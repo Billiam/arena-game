@@ -5,9 +5,9 @@ local Firing = {
 }
 Firing.__index = Firing
 
-function Firing.create(bulletList) 
+function Firing.create(entities)
   local instance = {
-    bulletList = bulletList,
+    entities = entities,
     accumulator = 0
   }
   setmetatable(instance, Firing)
@@ -25,10 +25,10 @@ function Firing:update(player, dt)
   local bullets = player:fire(self.accumulator)
   self.accumulator = 0
 
-  if bullets and self.bulletList then
+  if bullets and self.entities then
     local kick = Vector(0,0)
     for i,bullet in ipairs(bullets) do
-      self.bulletList:add(bullet)
+      self.entities:add(bullet)
       kick = kick + bullet.velocity:rotated(math.pi) * bullet.mass * 0.1
     end
     

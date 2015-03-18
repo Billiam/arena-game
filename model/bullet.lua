@@ -1,6 +1,6 @@
 local Vector = require('vendor.h.vector')
 local Composable = require('model.mixin.composable')
-
+local Collidable = require('model.mixin.collidable')
 local beholder = require('vendor.beholder')
 
 local Bullet = {
@@ -13,6 +13,7 @@ local Bullet = {
 Bullet.mt = { __index = Bullet }
 
 Composable:mixInto(Bullet)
+Collidable:mixInto(Bullet)
 
 function Bullet.create(position, angle, speed)
   local instance = {
@@ -34,8 +35,12 @@ end
 function Bullet:update(dt)
   self:updateComponents(self, dt)
 
-  self.position = self.position + self.velocity * dt
-  beholder.trigger('COLLIDEMOVE', self)
+  self:move(self.position + self.velocity * dt)
+end
+
+function Bullet:kill()
+  self.isAlive = false
+  beholder.trigger('KILL', self)
 end
 
 function Bullet.collide(bullet, other)

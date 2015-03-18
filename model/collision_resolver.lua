@@ -58,11 +58,19 @@ function CollisionResolver:clear()
 end
 
 function CollisionResolver:place(item)
+  if not self.collider:hasItem(item) then
+    return
+  end
+
   self.collider:update(item, item.position.x, item.position.y)
 end
 
 function CollisionResolver:move(item)
   local collisions, len
+
+  if not self.collider:hasItem(item) then
+    return
+  end
 
   item.position.x, item.position.y, collisions, len = self.collider:move(item, item.position.x, item.position.y, item.collide)
   if len > 0 then

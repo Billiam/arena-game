@@ -16,7 +16,7 @@ Player.__index = Player
 Composable:mixInto(Player)
 Collidable:mixInto(Player)
 
-local gunDistance = 20
+local gunDistance = 10
 
 function Player.create(position, health)
   local instance = {

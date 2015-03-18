@@ -1,5 +1,4 @@
 require('app')
-require ('lib.callbacks')
 
 local Initializer = require('lib.initializer')
 local Resource = require('resource')
@@ -14,6 +13,10 @@ function love.load(arg)
   end
 
   Initializer.init()
+
+  if App.development then
+    require('lib.development')
+  end
 
   State.switch(Resource.state.title)
 end

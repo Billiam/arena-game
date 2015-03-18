@@ -8,7 +8,7 @@ local Health = require('component.health')
 
 local Gun = require('model.gun')
 
-return function(position, bullets, controllerIndex)
+return function(position, entities, controllerIndex)
   local health = Health.create()
   local entity = player.create(position, health)
   entity:setGun(Gun.auto())
@@ -17,8 +17,8 @@ return function(position, bullets, controllerIndex)
     entity:add(PlayerInput.create(1))
   end
 
-  if bullets then
-    entity:add(Firing.create(bullets))
+  if entities then
+    entity:add(Firing.create(entities))
   end
 
   entity:add(View.create())
