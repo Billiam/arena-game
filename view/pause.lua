@@ -11,7 +11,7 @@ function Pause.render(scene)
   love.graphics.setColor(255, 255, 255, 100)
   love.graphics.rectangle('fill', 0, 0, 400, 300)
 
-  love.graphics.setFont(Resource.font.noto_black[24])
+  love.graphics.setFont(Resource.font.pressstart2p[24])
   love.graphics.setColor(0, 0, 0, 160)
   love.graphics.printf(Translate.PAUSED, 0, 20, 400, 'center')
 

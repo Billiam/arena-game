@@ -7,7 +7,7 @@ function Leaderboard.render(scores, guiScene)
   
   love.graphics.push()
   love.graphics.translate(love.graphics.getWidth()/2 - 100, 100)
-  love.graphics.setFont(Resource.font.noto_black[20])
+  love.graphics.setFont(Resource.font.pressstart2p[24])
   love.graphics.setColor(50, 50, 50, 255)
   
   for i,score in ipairs(scores) do

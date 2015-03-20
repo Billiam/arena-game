@@ -26,7 +26,7 @@ function Title.resume()
 end
 
 function Title.initGui()
-  scene = TitleMenu.init(300, love.graphics.getWidth() - 300, love.graphics.getHeight()/2 - 200)
+  scene = TitleMenu.init(300, love.graphics.getWidth() - 300, love.graphics.getHeight()/2 - 180)
 end
 
 function Title.resize()

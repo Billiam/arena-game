@@ -3,15 +3,17 @@ local Resource = require('resource')
 return {
   label = {
     color = {0, 0, 0, 160},
-    font = Resource.font.noto_black[20],
+    font = Resource.font.pressstart2p[18],
   },
   [".menu"] = {
-    color = {0, 0, 0, 100},
-    font = Resource.font.noto_black[20]
+    color = {42, 52, 40, 255},
+    font = Resource.font.pressstart2p[18],
+    text_shadow = {3, 3, {0, 0, 0, 50}}
   },
   [".menu:hover"] = {
-    color = {0, 0, 0, 220},
+    color = {0, 0, 0, 255},
     background = {0, 0, 0, 15 },
+    text_shadow = false
   },
   [".overlay"] = {
     color = { 0, 0, 0, 50},
@@ -22,7 +24,7 @@ return {
     background = { 0, 0, 0, 10 }
   },
   ["button.option"] = {
-    font = Resource.font.noto_black[20],
+    font = Resource.font.pressstart2p[18],
     color = {0, 0, 0, 160}
   },
   ["button.option:hover"] = {

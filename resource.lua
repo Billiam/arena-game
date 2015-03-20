@@ -7,7 +7,7 @@ function Resources.init()
   Resources.view = Proxy(function(k) return assert(love.filesystem.load('view/' .. k .. '.lua'))() end)
   Resources.gui = Proxy(function(k) return assert(love.filesystem.load('gui/' .. k .. '.lua'))() end)
   Resources.audio = Proxy(function(k) return love.audio.newSource('assets/audio/' .. k .. '.ogg', 'static') end)
-  Resources.font = Proxy(function(k) return Proxy(function(s) return love.graphics.newFont('assets/font/' .. k .. '.ttc', s) end) end)
+  Resources.font = Proxy(function(k) return Proxy(function(s) return love.graphics.newFont('assets/font/' .. k .. '.ttf', s) end) end)
 end
 
 function Resources.reload()

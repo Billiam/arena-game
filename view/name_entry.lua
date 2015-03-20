@@ -5,7 +5,7 @@ NameEntry.__index = NameEntry
 local function renderChar(text, position, hideUnderline)
   local offset = (position - 1) * 35
   local character = text[position]
-  love.graphics.setFont(Resource.font.noto_regular[20])
+  love.graphics.setFont(Resource.font.pressstart2p[20])
   
   if character then
     if character == text.DELETE then
