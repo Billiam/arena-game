@@ -21,8 +21,7 @@ function Firing:update(player, dt)
   if not player.isFiring then
     return
   end
-  
-  local bullets = player:fire(self.accumulator)
+  local bullets = player:fire(self.accumulator, #self.entities:type('bullet'))
   self.accumulator = 0
 
   if bullets and self.entities then

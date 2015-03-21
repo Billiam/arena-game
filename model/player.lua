@@ -56,8 +56,8 @@ function Player:reset()
   self.isAlive = true
 end
 
-function Player:fire(dt)
-  return self.gun:fire(dt, self)
+function Player:fire(dt, activeBullets)
+  return self.gun:fire(dt, self, activeBullets)
 end
 
 function Player:update(dt)

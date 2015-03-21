@@ -1,4 +1,3 @@
-local Throttle = require('lib.throttle')
 local Bullet = require('model.factory.bullet')
 local Auto = require('model.gun.auto')
 
@@ -13,23 +12,18 @@ function Gun.none()
   return none
 end
 
-function Gun.auto()
-  return Gun.create(Auto)
+function Gun.auto(...)
+  return Gun.create(Auto, ...)
 end
 
 function Gun.create(type)
   local instance = {
-    properties = type
+    properties = type,
+    lastFire = 0,
+    limit = 4
   }
   
   setmetatable(instance, Gun.mt)
-
-  if type.repeatRate and type.repeatRate > 0 then
-    instance.throttle = Throttle.create(
-      function(...) return instance:createShot(...) end, 
-      type.repeatRate
-    )
-  end
   
   return instance
 end
@@ -40,8 +34,13 @@ function Gun:createShot(player)
   return { Bullet(player:gunPosition(), angle, self.properties.speed) }
 end
 
-function Gun:fire(dt, ...)
-  return self.throttle:run(dt, ...)
+function Gun:fire(dt, player, activeBullets)
+  if self.lastFire + dt >= self.properties.repeatRate and activeBullets < self.limit then
+    self.lastFire = 0
+    return self:createShot(player)
+  end
+
+  self.lastFire = self.lastFire + dt
 end
 
 return Gun
