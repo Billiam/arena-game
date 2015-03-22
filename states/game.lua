@@ -8,6 +8,7 @@ local Camera = require('lib.arcade_camera')
 local Vector =  require('vendor.h.vector')
 local Bump = require('vendor.bump')
 local beholder = require('vendor.beholder')
+local cron = require('vendor.cron')
 
 -- models
 local Collection = require('model.collection')
@@ -51,12 +52,18 @@ end
 function Game.update(dt)
   dt = dt * (Game.dtModifier or 1)
 
+  Game.updateTimers(dt)
   Game.updateInput(dt)
   Game.updatePlayer(dt)
   Game.updateEntities(dt)
---  Game.updateBullets(dt)
   Game.updateDead(dt)
   Game.updateWave(dt)
+end
+
+function Game.updateTimers(dt)
+  if Game.timer then
+    Game.timer:update(dt)
+  end
 end
 
 function Game.draw()
@@ -154,7 +161,12 @@ end
 
 function Game.death(player, cause)
   scorekeeper:save()
-  Gamestate.push(Resource.state.death)
+
+  if not Game.timer then
+    Game.timer = cron.after(2, function()
+      Gamestate.push(Resource.state.death)
+    end)
+  end
 end
 
 function Game.kill(entity)
@@ -171,7 +183,7 @@ function Game.rescue(person)
 end
 
 function Game.registerListeners()
-  eventListeners.death = beholder.observe('PLAYERDEATH', Game.restartWave)
+  eventListeners.death = beholder.observe('PLAYERDEATH', Game.playerDied)
   eventListeners.gameEnd = beholder.observe('GAMEOVER', Game.death)
   eventListeners.kill = beholder.observe('KILL', Game.kill)
   eventListeners.rescue = beholder.observe('RESCUE', Game.rescue)
@@ -180,6 +192,15 @@ end
 function Game.resize(x,y)
   --update camera
   camera:resize(x,y)
+end
+
+function Game.playerDied()
+  if not Game.timer then
+    Game.timer = cron.after(2, function()
+      Game.timer = nil
+      Game.restartWave()
+    end)
+  end
 end
 
 function Game.unregisterListeners()

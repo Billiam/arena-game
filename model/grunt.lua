@@ -38,13 +38,17 @@ end
 function Grunt:update(dt, player)
   self:updateComponents(self, dt, player)
   self.accumulator = self.accumulator + dt
-  
+
+  if not player.isAlive then
+    return
+  end
+
   if self.accumulator >= self.nextStep then
     self.patience = math.max(0, 1 - self.accumulator/30)
 
     self.nextStep = self.accumulator + self.minimumStep + self.patience * 0.2
-    
-    self:step(dt, player)
+
+    self:step(dt, player.position)
   end
 end
 
@@ -52,8 +56,8 @@ function Grunt:render()
   self:renderComponents(self)
 end
 
-function Grunt:step(dt, player)
-  local newPosition = self.position + (player.position - self.position):normalize_inplace() * self.distance
+function Grunt:step(dt, position)
+  local newPosition = self.position + (position - self.position):normalize_inplace() * self.distance
   self.angle = Geometry.lineAngle(self.position, newPosition)
   self:move(newPosition)
 end

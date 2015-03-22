@@ -39,6 +39,10 @@ local function call(self, method, ...)
   end
 end
 
+function Composable:resetComponents(...)
+  call(self, 'reset', ...)
+end
+
 function Composable:updateComponents(...)
   call(self, 'update', ...)
 end

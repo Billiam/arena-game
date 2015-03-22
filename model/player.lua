@@ -54,6 +54,7 @@ end
 
 function Player:reset()
   self.isAlive = true
+  self:resetComponents(self)
 end
 
 function Player:fire(dt, activeBullets)
