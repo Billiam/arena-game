@@ -196,7 +196,7 @@ end
 
 function Game.playerDied()
   if not Game.timer then
-    Game.timer = cron.after(2, function()
+    Game.timer = cron.after(2.5, function()
       Game.timer = nil
       Game.restartWave()
     end)
@@ -221,6 +221,8 @@ function Game.cleanup()
   if scorekeeper then
     scorekeeper:reset()
   end
+
+  Game.timer = nil
 
   Game.unregisterListeners()
 end

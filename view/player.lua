@@ -1,10 +1,22 @@
 local Geometry = require('lib.geometry')
 local Resource = require('resource')
-local anim8 = require('vendor.anim8')
+local anim8 = require('lib.anim8')
 
-local death_img = Resource.image['player/death']
-local w, h = death_img:getWidth(), death_img:getHeight()
-local death_grid = anim8.newGrid(w/9, h, w, h)
+--animation resources
+local sprite = Resource.image['player/sprite']
+local w, h = sprite:getWidth(), sprite:getHeight()
+local grid = anim8.newGrid(w/14, h/3, w, h)
+
+local death = anim8.newAnimation(
+  sprite,
+  grid('1-' .. 13, 1),
+  {
+    ['1-6'] = 1,
+    [7] = 7,
+    ['8-13'] = 1.5,
+  }
+)
+local walk = anim8.newAnimation(sprite, grid(1, 2))
 
 local Player = {
   type = 'player_view'
@@ -13,56 +25,48 @@ Player.mt = {__index = Player }
 
 function Player.create()
   local instance = {
-    death = anim8.newAnimation(death_grid('1-9', 1), 1/10, 'pauseAtEnd')
+    death = anim8.newPlayer(death, 12, 'pauseAtEnd'),
+    walk = anim8.newPlayer(walk, 1)
   }
+  instance.animation = instance.walk
+
   setmetatable(instance, Player.mt)
   return instance
 end
 
 function Player:reset()
+  self.animation = self.walk
+
+  -- TODO Cleanup
   self.death:gotoFrame(1)
   self.death:resume()
+  self.walk:gotoFrame(1)
+  self.walk:resume()
 end
 
 function Player:update(player, dt)
   if not player.isAlive then
-    self.death:update(dt)
+    self.animation = self.death
   end
+
+  self.animation:update(dt)
 end
 
 function Player:render(player)
-  if player.isAlive then
-    local gunPosition = player:gunPosition()
+  local flipped = false
+  --TODO: Abstract offsets
+  local offset = 25
 
-    local img = Resource.image['player/firing']
-    local offset = 0
-    local width = 1
-
-    if math.abs(Geometry.radianDiff(player.angle, math.pi)) >= Geometry.QUARTERCIRCLE then
-      width = -1
-      offset = img:getWidth()
-    end
-
-    love.graphics.draw(
-      img,
-      player.position.x - 9,
-      player.position.y - 2,
-      0,
-      width,
-      1,
-      offset
-    )
-
-    love.graphics.setColor(255, 0, 255)
-    love.graphics.circle("fill", gunPosition.x, gunPosition.y, 4, 8)
-    love.graphics.setColor(255, 255, 225)
-
-  else
-    love.graphics.push()
-    love.graphics.translate(player.position.x + player.width/2, player.position.y + player.height/2)
-    self.death:draw(death_img, -8, -8)
-    love.graphics.pop()
+  if math.abs(Geometry.radianDiff(player.angle, math.pi)) >= Geometry.QUARTERCIRCLE then
+    flipped = true
+    offset = 12
   end
+
+  love.graphics.push()
+  love.graphics.translate(player.position.x + player.width/2, player.position.y + player.height/2)
+  self.animation.flippedH = flipped
+  self.animation:draw(-offset, -14)
+  love.graphics.pop()
 end
 
 return Player
