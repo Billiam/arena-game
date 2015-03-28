@@ -5,7 +5,7 @@ local anim8 = require('lib.anim8')
 --animation resources
 local sprite = Resource.image['player/sprite']
 local w, h = sprite:getWidth(), sprite:getHeight()
-local grid = anim8.newGrid(w/14, h/3, w, h)
+local grid = anim8.newGrid(w/13, h/3, w, h)
 
 local death = anim8.newAnimation(
   sprite,
