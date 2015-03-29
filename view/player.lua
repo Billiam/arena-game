@@ -25,28 +25,37 @@ Player.mt = {__index = Player }
 
 function Player.create()
   local instance = {
-    death = anim8.newPlayer(death, 12, 'pauseAtEnd'),
-    walk = anim8.newPlayer(walk, 1)
+    anim = {
+      death = anim8.newPlayer(death, 12, 'pauseAtEnd'),
+      walk = anim8.newPlayer(walk, 1)
+    }
   }
-  instance.animation = instance.walk
+  instance.animation = instance.anim.walk
 
   setmetatable(instance, Player.mt)
   return instance
 end
 
-function Player:reset()
-  self.animation = self.walk
+function Player:init(player)
+  if player.isAlive then
+    self.animation = self.anim.walk
+  else
+    self.animation = self.anim.death
+  end
+end
 
-  -- TODO Cleanup
-  self.death:gotoFrame(1)
-  self.death:resume()
-  self.walk:gotoFrame(1)
-  self.walk:resume()
+function Player:reset()
+  self.animation = self.anim.walk
+
+  for i,v in pairs(self.anim) do
+    v:gotoFrame(1)
+    v:resume()
+  end
 end
 
 function Player:update(player, dt)
   if not player.isAlive then
-    self.animation = self.death
+    self.animation = self.anim.death
   end
 
   self.animation:update(dt)
