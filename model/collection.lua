@@ -17,9 +17,10 @@ function Collection:removeBy(callback)
   local collection = {}
 
   for i=#self.list, 1, -1 do
-    if callback(self.list[i]) then
-      table.insert(collection, self.list[i])
-      self:removeElement(self.list[i])
+    local item = self.list[i]
+    if callback(item) then
+      table.insert(collection, item)
+      self:removeElement(item)
     end
   end
 
@@ -33,7 +34,7 @@ function Collection:removeDead()
 end
 
 function Collection.isTransientEntity(entity)
-  return entity.type == 'death' or entity.type == 'bullet'
+  return entity.reset == nil
 end
 
 function Collection:removeTransient()

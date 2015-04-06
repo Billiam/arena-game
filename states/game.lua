@@ -173,9 +173,13 @@ function Game.kill(entity)
   scorekeeper:add(entity.type)
 
   local spawnedElements = DeathFactory(entity)
-  for i,v in ipairs(spawnedElements) do
-    worldEntities:add(v)
+  for i,element in ipairs(spawnedElements) do
+    worldEntities:add(element)
   end
+end
+
+function Game.spawn(entity)
+  worldEntities:add(entity)
 end
 
 function Game.rescue(person)
@@ -186,6 +190,7 @@ function Game.registerListeners()
   eventListeners.death = beholder.observe('PLAYERDEATH', Game.playerDied)
   eventListeners.gameEnd = beholder.observe('GAMEOVER', Game.death)
   eventListeners.kill = beholder.observe('KILL', Game.kill)
+  eventListeners.spawn = beholder.observe('SPAWN', Game.spawn)
   eventListeners.rescue = beholder.observe('RESCUE', Game.rescue)
 end
 

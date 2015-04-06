@@ -1,6 +1,7 @@
 local waves = require('data/waves')
 local Vector = require('vendor.h.vector')
 
+local Spheroid = require('model.factory.spheroid')
 local Grunt = require('model.factory.grunt')
 local Barrier = require('model.factory.barrier')
 local Person = require('model.factory.person')
@@ -16,11 +17,20 @@ local WaveManager = {
 
 WaveManager.__index = WaveManager
 
-local safeDistance = {
+local SafeDistance = {
   grunt = 100,
   hulk = 150,
   barrier = 40,
   person = 40,
+  spheroid = 50,
+}
+
+local SpawnTypes = {
+  grunt = Grunt,
+  barrier = Barrier,
+  person = Person,
+  hulk = Hulk,
+  spheroid = Spheroid,
 }
 
 local function getWave(index)
@@ -51,23 +61,22 @@ function WaveManager:addWave()
   self.arena.visible = self:currentWave().walls
   
   self:centerPlayer()
-  
-  self:addWorldEntities('grunt', Grunt)
-  self:addWorldEntities('barrier', Barrier)
-  self:addWorldEntities('person', Person)
-  self:addWorldEntities('hulk', Hulk)
+
+  for name, factory in pairs(SpawnTypes) do
+    self:addWorldEntities(name, factory)
+  end
 end
 
 function WaveManager:restartRound()
   self:centerPlayer()
 
-  -- Remove decorative entities (death actors)
+  -- Remove decorative entities (death actors, particles, etc)
   self.worldEntities:removeTransient()
 
   for i, entity in ipairs(self.worldEntities.list) do
     entity:reset(self.player)
 
-    local distance = safeDistance[entity.type]
+    local distance = SafeDistance[entity.type] or 0
     local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
 
     entity:place(position)
@@ -84,9 +93,9 @@ function WaveManager:restartRound()
 end
 
 function WaveManager:addWorldEntities(type, klass)
-  local distance = safeDistance[type]
+  local distance = SafeDistance[type]
   for i = 1,self:currentWave()[type] do
-    local entity = klass(position, self.worldEntities)
+    local entity = klass(nil, self.worldEntities)
     local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
     entity.position = position
 

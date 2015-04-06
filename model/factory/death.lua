@@ -4,7 +4,8 @@ local emptyReturn = {}
 local noop = function() return emptyReturn end
 
 local factories = Proxy(function(k)
-  return love.filesystem.load('model/factory/death/' .. k .. '.lua')() or noop
+  local factory = love.filesystem.load('model/factory/death/' .. k .. '.lua')
+  return factory and factory() or noop
 end)
 
 return function(entity)

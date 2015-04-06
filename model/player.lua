@@ -77,7 +77,7 @@ function Player:gunPosition()
 end
 
 function Player.collide(player, other)
-  if other.isAlive and (other.isGrunt or other.isBarrier) then 
+  if other.isAlive and (other.isGrunt or other.isBarrier) then
     return 'touch'
   elseif other.isWall then
     return 'slide'

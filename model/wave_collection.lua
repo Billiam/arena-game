@@ -4,6 +4,12 @@ local WaveCollection = {}
 WaveCollection.__index = WaveCollection
 setmetatable(WaveCollection, {__index = Collection})
 
+RequiredEnemies = {
+  'grunt',
+  'spheroid',
+  'enforcer'
+}
+
 function WaveCollection.create(collider)
   local instance = {
     list = {},
@@ -65,12 +71,14 @@ function WaveCollection:nearest(position, type)
   return closest
 end
 
-function WaveCollection:requiredEnemies()
-  return #self:type('grunt')
-end
-
 function WaveCollection:roundComplete()
-  return self:requiredEnemies() == 0
+  for i,name in ipairs(RequiredEnemies) do
+    if #self:type(name) > 0 then
+      return false
+    end
+  end
+
+  return true
 end
 
 return WaveCollection

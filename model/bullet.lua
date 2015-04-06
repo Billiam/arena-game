@@ -44,7 +44,7 @@ function Bullet:kill()
 end
 
 function Bullet.collide(bullet, other)
-  if other.isWall or other.isAlive and (other.isBarrier or other.isGrunt or other.isHulk) then
+  if other.isWall or other.isAlive and (other.isBarrier or other.isGrunt or other.isHulk or other.isSpheroid or other.isEnforcer) then
     return 'touch'
   end
 end
