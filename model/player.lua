@@ -22,6 +22,7 @@ function Player.create(position, health)
   local instance = {
     position = position:clone(),
     angle = 0,
+    velocity = Vector.new(0, 0),
     gun = Gun.none(),
 
     speed = 165,
@@ -36,6 +37,10 @@ function Player.create(position, health)
   local self = setmetatable(instance, Player)
   
   return self
+end
+
+function Player:center()
+  return self.position + Vector.new(self.width/2, self.height/2)
 end
 
 function Player:lives()

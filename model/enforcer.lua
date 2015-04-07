@@ -2,6 +2,7 @@ local beholder = require('vendor.beholder')
 local cron = require('vendor.cron')
 local Geometry = require('lib.geometry')
 local Vector = require('vendor.h.vector')
+local Spark = require('model.factory.spark')
 
 local Collidable = require('model.mixin.collidable')
 local Composable = require('model.mixin.composable')
@@ -29,6 +30,8 @@ function Enforcer.create(position)
   }
 
   setmetatable(instance, Enforcer.mt)
+
+  instance:resetFire()
 
   return instance
 end
@@ -86,6 +89,31 @@ function Enforcer.collide(enforcer, other)
       return 'touch'
     end
   end
+end
+
+function Enforcer:center()
+  return self.position + Vector.new(self.width/2, self.height/2)
+end
+
+function Enforcer:fire()
+  local inaccuracy = Geometry.HALFCIRCLE * (love.math.random() - 0.5) * 0.1
+  local angle = Geometry.lineAngle(self.player:center(), self.position) + inaccuracy
+  local dist = self.position:dist2(self.player.position)
+  local speed = math.max(80, math.min(700, dist/150))
+  local velocity = Vector.fromAngle(angle, speed)
+
+  -- predict player movement 10% of the time
+  if love.math.random() < 0.1 then
+    velocity = velocity + self.player.velocity
+  end
+
+  local spark = Spark(self:center(), velocity)
+  beholder.trigger('SPAWN', spark)
+  self:resetFire()
+end
+
+function Enforcer:resetFire()
+  self.timers.fire = cron.after(love.math.random() * 0.6 + 0.35, self.fire, self)
 end
 
 function Enforcer:kill()
