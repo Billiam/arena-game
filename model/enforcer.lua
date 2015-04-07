@@ -1,4 +1,7 @@
 local beholder = require('vendor.beholder')
+local cron = require('vendor.cron')
+local Geometry = require('lib.geometry')
+local Vector = require('vendor.h.vector')
 
 local Collidable = require('model.mixin.collidable')
 local Composable = require('model.mixin.composable')
@@ -10,7 +13,7 @@ local Enforcer = {
   colliderType = 'enforcer',
   height = 20,
   width = 20,
-  speed = 20,
+  speed = 3/4,
   isAlive = true
 }
 
@@ -22,6 +25,7 @@ Collidable:mixInto(Enforcer)
 function Enforcer.create(position)
   local instance = {
     position = position,
+    timers = {}
   }
 
   setmetatable(instance, Enforcer.mt)
@@ -30,15 +34,44 @@ function Enforcer.create(position)
 end
 
 function Enforcer:update(dt, player)
+  self.player = player
+
   self:updateComponents(self, dt, player)
   if not player.isAlive then
     return
   end
 
+  if not self.target then
+    self:updateTarget()
+  end
+
+  for i,timer in pairs(self.timers) do
+    timer:update(dt)
+  end
+
   self:updatePosition(dt, player)
 end
 
+function Enforcer:updateTarget()
+  if love.math.random() < 0.005 then
+    local otherDirection = Geometry.lineAngle(self.position, self.player.position)
+    self.target = Vector.fromAngle(otherDirection, 1500)
+  else
+    self.target = self.player.position:clone()
+  end
+  self:setTargettingTimer()
+end
+
+function Enforcer:setTargettingTimer()
+  self.timers.target = cron.after(love.math.random() + 0.1, self.updateTarget, self)
+end
+
 function Enforcer:updatePosition(dt, player)
+  self:move(self.position + (self.target - self.position) * dt * self.speed)
+
+  if self.position:dist2(self.target) < 5 then
+    self:updateTarget()
+  end
 end
 
 function Enforcer:render()

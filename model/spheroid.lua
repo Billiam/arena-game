@@ -16,11 +16,11 @@ local Spheroid = {
   colliderType = 'spheroid',
   height = 35,
   width = 35,
-  thrust = 5,
-  indecision = 2,
+  thrust = 3,
+  indecision = 1,
   minSpawn = 1.5,
   maxSpawn = 4,
-  torque = math.rad(270),
+  torque = Geometry.CIRCLE,
   isAlive = true
 }
 
@@ -119,16 +119,10 @@ function Spheroid:checkEnforcers()
 end
 
 function Spheroid:updatePosition(dt, player)
---  local distance = self.position:dist2(player.position)
   local thrust = self.thrust
---  if distance < self.width * 5 then
---    thrust = self.thrust * 4
---  end
-
   self.velocity = (self.velocity + Vector.fromAngle(self.angle, thrust) * dt) * math.pow(0.7, dt)
 
   self:move(self.position + self.velocity)
---  self.position = self.position + self.velocity
 end
 
 function Spheroid:render()
