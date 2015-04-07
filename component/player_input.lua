@@ -33,9 +33,11 @@ function PlayerInput:update(player, dt)
       player.angle = math.atan2(move.y, move.x)
     end
   end
-  
-  if moving then 
-    player:move(player.position + move * player.speed * dt)
+
+  player.velocity = move:clone() * player.speed
+
+  if moving then
+    player:move(player.position + player.velocity * dt)
   end
 end
 
