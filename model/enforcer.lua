@@ -14,7 +14,7 @@ local Enforcer = {
   colliderType = 'enforcer',
   height = 20,
   width = 20,
-  speed = 3/4,
+  speed = 6/10,
   isAlive = true
 }
 
@@ -99,7 +99,7 @@ function Enforcer:fire()
   local inaccuracy = Geometry.HALFCIRCLE * (love.math.random() - 0.5) * 0.1
   local angle = Geometry.lineAngle(self.player:center(), self.position) + inaccuracy
   local dist = self.position:dist2(self.player.position)
-  local speed = math.max(80, math.min(700, dist/150))
+  local speed = math.max(80, math.min(400, dist/150))
   local velocity = Vector.fromAngle(angle, speed)
 
   -- predict player movement 10% of the time
@@ -113,7 +113,7 @@ function Enforcer:fire()
 end
 
 function Enforcer:resetFire()
-  self.timers.fire = cron.after(love.math.random() * 0.6 + 0.35, self.fire, self)
+  self.timers.fire = cron.after(love.math.random() * 3.5 + 0.35, self.fire, self)
 end
 
 function Enforcer:kill()

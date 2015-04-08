@@ -22,7 +22,7 @@ local SafeDistance = {
   hulk = 150,
   barrier = 40,
   person = 40,
-  spheroid = 50,
+  spheroid = 120,
 }
 
 local SpawnTypes = {
