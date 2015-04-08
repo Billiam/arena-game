@@ -6,6 +6,7 @@ local Grunt = require('model.factory.grunt')
 local Barrier = require('model.factory.barrier')
 local Person = require('model.factory.person')
 local Hulk = require('model.factory.hulk')
+local Quark = require('model.factory.quark')
 
 local WaveManager = {
   current = 1,
@@ -23,6 +24,7 @@ local SafeDistance = {
   barrier = 40,
   person = 40,
   spheroid = 120,
+  quark = 120,
 }
 
 local SpawnTypes = {
@@ -31,6 +33,7 @@ local SpawnTypes = {
   person = Person,
   hulk = Hulk,
   spheroid = Spheroid,
+  quark = Quark
 }
 
 local function getWave(index)

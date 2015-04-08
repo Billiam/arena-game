@@ -7,7 +7,9 @@ setmetatable(WaveCollection, {__index = Collection})
 RequiredEnemies = {
   'grunt',
   'spheroid',
-  'enforcer'
+  'enforcer',
+  'quark',
+  'tank'
 }
 
 function WaveCollection.create(collider)
