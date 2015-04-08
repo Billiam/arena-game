@@ -23,12 +23,12 @@ function Spark.create(position, velocity)
   local instance = {
     position = position - Vector.new(Spark.width/2, Spark.height/2),
     velocity = velocity,
-    acceleration = Vector.fromAngle(Geometry.randomAngle(), velocity.y * love.math.random()),
+    acceleration = Vector.fromAngle(Geometry.randomAngle(), 150 * love.math.random()),
   }
 
   setmetatable(instance, Spark.mt)
 
-  instance.timer = cron.after(3, instance.kill, instance)
+  instance.timer = cron.after(3, instance.timeout, instance)
 
   return instance
 end
@@ -44,6 +44,10 @@ function Spark:update(dt)
   self.velocity = self.velocity + self.acceleration * dt
 
   self:move(self.position + self.velocity * dt)
+end
+
+function Spark:timeout()
+  self.isAlive = false
 end
 
 function Spark:kill()
