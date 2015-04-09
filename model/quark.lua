@@ -60,11 +60,19 @@ function Quark:spawn(dt)
   end
 end
 
+function Quark:rotate(angle)
+  self.velocity:rotate_inplace(angle)
+  self:resetRedirection()
+end
+
+function Quark:resetRedirection()
+  self.timers.redirect = cron.after(4 + self.indecision * love.math.random(), self.redirect, self)
+end
+
 function Quark:redirect()
   local angle = math.floor(love.math.random() * 4) * Geometry.QUARTERCIRCLE + Geometry.QUARTERCIRCLE/2
   self.velocity = Vector.fromAngle(angle, self.speed)
-
-  self.timers.redirect = cron.after(4 + self.indecision * love.math.random(), self.redirect, self)
+  self:resetRedirection()
 end
 
 function Quark:updateTimers(dt)
