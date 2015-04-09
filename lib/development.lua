@@ -3,6 +3,8 @@ local lurker = require('vendor.lurker')
 local Game = Resource.state.game
 local Input = require('lib.input')
 
+io.stdout:setvbuf("no")
+
 _G.inspect = require('vendor.inspect')
 
 lurker.quiet = false
