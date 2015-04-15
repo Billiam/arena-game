@@ -1,4 +1,3 @@
-local Geometry = require('lib.geometry')
 local Vector = require('vendor.h.vector')
 local Composable = require('model.mixin.composable')
 local Collidable = require('model.mixin.collidable')
@@ -6,64 +5,63 @@ local Collidable = require('model.mixin.collidable')
 local beholder = require('vendor.beholder')
 local cron = require('vendor.cron')
 
-local Spark = {
-  isSpark = true,
-  colliderType = 'spark',
-  type = 'spark',
+local Shell = {
+  isShell = true,
+  colliderType = 'shell',
+  type = 'shell',
   isAlive = true,
-  width = 10,
-  height = 10,
+  width = 15,
+  height = 15,
 }
-Spark.mt = { __index = Spark }
+Shell.mt = { __index = Shell }
 
-Composable:mixInto(Spark)
-Collidable:mixInto(Spark)
+Composable:mixInto(Shell)
+Collidable:mixInto(Shell)
 
-function Spark.create(position, velocity)
+function Shell.create(position, velocity)
   local instance = {
-    position = position - Vector.new(Spark.width/2, Spark.height/2),
+    position = position - Vector.new(Shell.width/2, Shell.height/2),
     velocity = velocity,
-    acceleration = Vector.fromAngle(Geometry.randomAngle(), 150 * love.math.random()),
   }
 
-  setmetatable(instance, Spark.mt)
+  setmetatable(instance, Shell.mt)
 
   instance.timer = cron.after(3, instance.timeout, instance)
 
   return instance
 end
 
-function Spark:render()
+function Shell:render()
   self:renderComponents(self)
 end
 
-function Spark:update(dt, player)
+function Shell:update(dt, player)
   self:updateComponents(self, dt)
+
   if not player.isAlive then
     return
   end
 
   self.timer:update(dt)
-  self.velocity = self.velocity + self.acceleration * dt
 
   self:move(self.position + self.velocity * dt)
 end
 
-function Spark:timeout()
+function Shell:timeout()
   self.isAlive = false
 end
 
-function Spark:kill()
+function Shell:kill()
   self.isAlive = false
   beholder.trigger('KILL', self)
 end
 
-function Spark.collide(spark, other)
+function Shell.collide(shell, other)
   if other.isWall then
-    return 'slide'
+    return 'bounce'
   elseif other.isAlive and (other.isBullet or other.isPlayer) then
     return 'touch'
   end
 end
 
-return Spark
+return Shell

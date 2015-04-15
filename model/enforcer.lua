@@ -23,10 +23,11 @@ Enforcer.mt = { __index = Enforcer }
 Composable:mixInto(Enforcer)
 Collidable:mixInto(Enforcer)
 
-function Enforcer.create(position)
+function Enforcer.create(entityLimiter)
   local instance = {
     position = position,
-    timers = {}
+    timers = {},
+    entityLimiter = entityLimiter
   }
 
   setmetatable(instance, Enforcer.mt)

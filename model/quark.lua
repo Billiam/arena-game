@@ -5,14 +5,14 @@ local Geometry = require('lib.geometry')
 local Collidable = require('model.mixin.collidable')
 local Composable = require('model.mixin.composable')
 
-local Tank = require('model.factory.enforcer')
+local Tank = require('model.factory.tank')
 local cron = require('vendor.cron')
 
 local Quark = {
   isQuark = true,
   type = 'quark',
   colliderType = 'quark',
-  speed = 150,
+  speed = 250,
   height = 35,
   width = 35,
   indecision = 4,
@@ -26,9 +26,10 @@ Quark.mt = { __index = Quark }
 Composable:mixInto(Quark)
 Collidable:mixInto(Quark)
 
-function Quark.create(position)
+function Quark.create(entityLimiter)
   local instance = {
-    position = position,
+    position = nil,
+    entityLimiter = entityLimiter,
     timers = {},
     tankCount = 0
   }
@@ -45,10 +46,15 @@ function Quark:spawn(dt)
     return
   end
 
+  if self.entityLimiter.tank:isLimited() then
+    self:resetSpawntime()
+    return
+  end
+
   if self.tankCount < self.maxTanks then
     self.tankCount = self.tankCount + 1
 
-    local tank = Tank()
+    local tank = Tank(self.entityLimiter)
     tank.position = self.position
     beholder.trigger('SPAWN', tank)
 

@@ -16,7 +16,7 @@ local Spheroid = {
   colliderType = 'spheroid',
   height = 35,
   width = 35,
-  thrust = 3,
+  thrust = 300,
   indecision = 1,
   minSpawn = 1.5,
   maxSpawn = 4,
@@ -33,11 +33,11 @@ local function spawnDelay()
   return love.math.random() + 2.5
 end
 
-function Spheroid.create(position)
+function Spheroid.create(entityLimiter)
   local instance = {
-    position = position,
     timers = {},
     hidden = false,
+    entityLimiter = entityLimiter
   }
 
   setmetatable(instance, Spheroid.mt)
@@ -52,10 +52,15 @@ function Spheroid:spawn(dt)
     return
   end
 
+  if self.entityLimiter.enforcer:isLimited() then
+    self:resetSpawntime()
+    return
+  end
+
   local count = #self.enforcers
 
   if count < self.enforcerCount then
-    local enforcer = Enforcer()
+    local enforcer = Enforcer(entityLimiter)
     enforcer.position = self.position
     table.insert(self.enforcers, enforcer)
 
@@ -122,7 +127,7 @@ function Spheroid:updatePosition(dt, player)
   local thrust = self.thrust
   self.velocity = (self.velocity + Vector.fromAngle(self.angle, thrust) * dt) * math.pow(0.7, dt)
 
-  self:move(self.position + self.velocity)
+  self:move(self.position + self.velocity * dt)
 end
 
 function Spheroid:render()

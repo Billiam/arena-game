@@ -21,6 +21,8 @@ local CollisionResolver = require('model.collision_resolver')
 local WaveManager = require('model.wave_manager')
 local Scorekeeper = require('model.scorekeeper')
 
+local EntityLimiter = require('model.limiter_set')
+
 -- data
 local ScoreTable = require('data.score')
 
@@ -31,7 +33,8 @@ local player
 local collisionResolver 
 local worldEntities
 local arena 
-local deathManager 
+local deathManager
+local entityLimiter
 
 local eventListeners = {}
 
@@ -101,6 +104,8 @@ function Game.setup()
   
   worldEntities = WaveCollection.create(collider)
 
+  entityLimiter = EntityLimiter.create(worldEntities)
+
   arena = Arena.create(App.width, App.height, 15, collider)
 
   player = Player(Vector(100, 100), worldEntities, 1)
@@ -110,7 +115,7 @@ function Game.setup()
   collisionResolver = CollisionResolver.create(collider)
   collisionResolver:observe()
   
-  waves = WaveManager.create(player, arena, worldEntities)
+  waves = WaveManager.create(player, arena, worldEntities, entityLimiter)
   scorekeeper = Scorekeeper.create(ScoreTable)
 end
 

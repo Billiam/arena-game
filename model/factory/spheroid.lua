@@ -1,8 +1,8 @@
 local View = require('view.spheroid')
 local Spheroid = require('model.spheroid')
 
-return function(position, entities)
-  local entity = Spheroid.create()
+return function(entities, entityLimiter)
+  local entity = Spheroid.create(entityLimiter)
   entity:add(View.create())
 
   return entity

@@ -24,7 +24,8 @@ local SafeDistance = {
   barrier = 40,
   person = 40,
   spheroid = 120,
-  quark = 120,
+  tank = 200,
+  quark = 250,
 }
 
 local SpawnTypes = {
@@ -44,11 +45,12 @@ function WaveManager:currentWave()
   return getWave(self.current)
 end
 
-function WaveManager.create(player, arena, worldEntities)
+function WaveManager.create(player, arena, worldEntities, entityLimiter)
   local instance = {
     player = player,
     arena = arena,
     worldEntities = worldEntities,
+    entityLimiter = entityLimiter
   }
   
   setmetatable(instance, WaveManager)
@@ -98,7 +100,7 @@ end
 function WaveManager:addWorldEntities(type, klass)
   local distance = SafeDistance[type]
   for i = 1,self:currentWave()[type] do
-    local entity = klass(nil, self.worldEntities)
+    local entity = klass(self.worldEntities, self.entityLimiter)
     local position = self.arena:randomPosition(entity.width, entity.height, self.player.position, distance)
     entity.position = position
 

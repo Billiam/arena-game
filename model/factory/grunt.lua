@@ -1,7 +1,7 @@
 local View = require('view.grunt')
 local Grunt = require('model.grunt')
 
-return function(position, entities)
+return function(entities)
   local entity = Grunt.create()
   entity:add(View.create())
 
