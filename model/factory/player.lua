@@ -8,10 +8,12 @@ local Health = require('component.health')
 
 local Gun = require('model.gun')
 
-return function(position, entities, controllerIndex)
+return function(entities, controllerIndex, entityLimiter)
   local health = Health.create()
-  local entity = player.create(position, health)
-  entity:setGun(Gun.auto())
+  local entity = player.create(health)
+
+  local gun = Gun.auto(entityLimiter)
+  entity:setGun(gun)
 
   if controllerIndex then
     entity:add(PlayerInput.create(1))

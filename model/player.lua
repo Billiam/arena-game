@@ -18,9 +18,8 @@ Collidable:mixInto(Player)
 
 local gunDistance = 10
 
-function Player.create(position, health)
+function Player.create(health)
   local instance = {
-    position = position:clone(),
     angle = 0,
     velocity = Vector.new(0, 0),
     gun = Gun.none(),
@@ -62,12 +61,14 @@ function Player:reset()
   self:resetComponents(self)
 end
 
-function Player:fire(dt, activeBullets)
-  return self.gun:fire(dt, self, activeBullets)
+function Player:fire()
+  return self.gun:fire(self)
 end
 
 function Player:update(dt)
   self:updateComponents(self, dt)
+
+  self.gun:update(dt)
 end
 
 function Player:render()

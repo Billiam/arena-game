@@ -108,7 +108,8 @@ function Game.setup()
 
   arena = Arena.create(App.width, App.height, 15, collider)
 
-  player = Player(Vector(100, 100), worldEntities, 1)
+  player = Player(worldEntities, 1, entityLimiter)
+  player.position = Vector(100, 100)
 
   collider:add(player, player.position.x, player.position.y, player.width, player.height)
   

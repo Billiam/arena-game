@@ -1,3 +1,4 @@
+local beholder = require('vendor.beholder')
 local Bullet = require('model.factory.bullet')
 local Auto = require('model.gun.auto')
 
@@ -16,11 +17,11 @@ function Gun.auto(...)
   return Gun.create(Auto, ...)
 end
 
-function Gun.create(type)
+function Gun.create(type, entityLimiter)
   local instance = {
     properties = type,
-    lastFire = 0,
-    limit = 4
+    timer = 0,
+    entityLimiter = entityLimiter
   }
   
   setmetatable(instance, Gun.mt)
@@ -34,13 +35,27 @@ function Gun:createShot(player)
   return { Bullet(player:gunPosition(), angle, self.properties.speed) }
 end
 
-function Gun:fire(dt, player, activeBullets)
-  if self.lastFire + dt >= self.properties.repeatRate and activeBullets < self.limit then
-    self.lastFire = 0
-    return self:createShot(player)
-  end
+function Gun:update(dt)
+  self.timer = self.timer + dt
+end
 
-  self.lastFire = self.lastFire + dt
+function Gun:fire(player)
+  if self.timer >= self.properties.repeatRate and self.entityLimiter.bullet:canAdd() then
+    self.timer = 0
+
+    local bullets = self:createShot(player)
+    local kick = Vector(0,0)
+
+    for i,bullet in ipairs(bullets) do
+      beholder.trigger('SPAWN', bullet)
+
+      kick = kick + bullet.velocity:rotated(math.pi) * bullet.mass * 0.2
+    end
+
+    if kick:len2() then
+      player:move(player.position + kick)
+    end
+  end
 end
 
 return Gun
